@@ -183,8 +183,8 @@ module.exports = {
           title:"Related Sites",
           links:[
             // TODO: find better images for this URLs, in the mean time use bch.svg
-            {name: "Bitcoin ABC", url:"https://www.bitcoinabc.org", imgUrl:"/img/logo/abc.png"},
             {name: "BCHD", url:"https://bchd.cash/", imgUrl:"/img/logo/bchd.png"},
+            {name: "Bitcoin ABC", url:"https://www.bitcoinabc.org", imgUrl:"/img/logo/bitcoinabc.jpg"},
             {name: "Bitcoin Unlimited", url:"https://bitcoinunlimited.info", imgUrl:"/img/logo/bu.png"},
             {name: "Bitcoin Cash Nodes", url:"https://cashnodes.io", imgUrl:"/img/logo/bch.svg"},
             {name: "BCH PoW Monitoring", url:"https://fork.lol", imgUrl:"/img/logo/fork.png"},
