@@ -60,23 +60,6 @@ block content
 										br
 										span.text-muted  (pruned: #{getblockchaininfo.pruned})
 
-							if (getblockchaininfo.softforks)
-								div.row
-									div.summary-table-label Soft Forks
-									div.summary-table-content.text-monospace
-										ul.list-unstyled
-											each item, itemName in getblockchaininfo.softforks
-												li
-													div.d-inline-block.text-right(style="width: 75px;")
-														span.font-weight-bold #{item.id}:
-													
-
-													if (item.reject.status)
-														span.mr-2
-															span  status = 
-															span.text-success active
-															//small.text-muted.ml-2 (height: #{item.height.toLocaleString()})
-
 							div.row
 								div.summary-table-label Block Count
 								div.summary-table-content.text-monospace #{getblockchaininfo.blocks.toLocaleString()}
