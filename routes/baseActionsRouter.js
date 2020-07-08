@@ -996,7 +996,14 @@ router.get("/address/:address", function(req, res, next) {
 		} catch (err2) {
 			//res.locals.pageErrors.push(utils.logError("u02qg02yqge", err));
 			try {
-				res.locals.addressObj = cashaddrjs.decode(address);
+				var saneAddress = "empty";
+				var prefix = global.activeBlockchain == "main" ? "bitcoincash:" : "bchtest:";
+				if(!address.includes(prefix)) {
+					saneAddress = prefix.concat(address);
+				} else {
+					saneAddress = address;
+				}
+				res.locals.addressObj = cashaddrjs.decode(saneAddress);
 				res.locals.addressObj["isCashAddr"]=true;
 			} catch(err3) {
 				//res.locals.pageErrors.push(utils.logError("address parsing error", err3));
