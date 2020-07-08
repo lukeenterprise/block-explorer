@@ -178,16 +178,7 @@ module.exports = {
     valueDisplayMaxLargeDigits: 4,
     header:{
       showToolsSubheader:(process.env.BTCEXP_UI_SHOW_TOOLS_SUBHEADER == "true"),
-      dropdowns:[
-        {
-          title:"Related Sites",
-          links:[
-            // TODO: find better images for this URLs, in the mean time use bch.svg
-            {name: "Bitcoin Cash", url:"https://www.bitcoincash.org", imgUrl:"/img/logo/bch.svg"},
-          ]
-        }
-      ]
-    },
+   },
     subHeaderToolsList:[0, 1, 4, 7, 8, 9], // indexes in "siteTools" below that are shown in the site "sub menu" (visible on all pages except homepage)
     prioritizedToolIdsList: [0, 1, 4, 7, 8, 9, 3, 2, 5, 10, 11, 6],
   },
