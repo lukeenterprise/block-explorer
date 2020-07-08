@@ -159,39 +159,6 @@ html(lang="en")
 				div(class="row")
 					div(class="col-md-5")
 						dl
-							dt Source
-							dd
-								a(href="https://github.com/sickpig/bch-rpc-explorer") github.com/sickpig/bch-rpc-explorer
-
-								if (global.sourcecodeProjectMetadata)
-									div(class="mt-2")
-										a(href="https://github.com/sickpig/bch-rpc-explorer", class="btn btn-primary btn-sm mr-3 mb-1 text-decoration-none")
-											i(class="fas fa-star mr-2")
-											span(class="mr-2") Star
-											span(class="badge bg-white text-dark") #{global.sourcecodeProjectMetadata.stargazers_count}
-
-										a(href="https://github.com/sickpig/bch-rpc-explorer/fork", class="btn btn-primary btn-sm mr-3 mb-1 text-decoration-none")
-											i(class="fas fa-code-branch mr-2")
-											span(class="mr-2") Fork
-											span(class="badge bg-white text-dark") #{global.sourcecodeProjectMetadata.forks_count}
-
-
-
-							dt App Details
-							dd
-								span version: #{global.appVersion}
-								if (sourcecodeVersion)
-									br
-									// the following is not a trailing spaces
-									span commit: 
-										a(href=("https://github.com/sickpig/bch-rpc-explorer/commit/" + sourcecodeVersion)) #{sourcecodeVersion}
-
-								br
-								span released: #{sourcecodeDate}
-								span(style="font-size: 0.9em;")  (
-									a(href="/changelog") changelog
-									span )
-
 							if (config.demoSite)
 								dt Public Demos
 								dd
@@ -209,9 +176,6 @@ html(lang="en")
 					div(class="col-md-7 text-md-right")
 						dl
 							dd
-								button.btn.btn-primary(type="button", class="btn btn-primary", data-toggle="modal", data-target="#exampleModalCenter")
-									i(class="fas fa-heart mr-2")
-									span Support Project
 
 		script(src="/js/jquery.min.js", integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh")
 		script(src="/js/popper.min.js", integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo")
