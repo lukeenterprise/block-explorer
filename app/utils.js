@@ -25,7 +25,8 @@ var exponentScales = [
 	{val:1000000000000, name:"tera", abbreviation:"T", exponent:"12", textDesc:"T"},
 	{val:1000000000, name:"giga", abbreviation:"G", exponent:"9", textDesc:"B"},
 	{val:1000000, name:"mega", abbreviation:"M", exponent:"6", textDesc:"M"},
-	{val:1000, name:"kilo", abbreviation:"K", exponent:"3", textDesc:"thou"}
+	{val:1000, name:"kilo", abbreviation:"K", exponent:"3", textDesc:"thou"},
+	{val:1, name:"", abbreviation:"", exponent:"", textDesc:""}
 ];
 
 var ipMemoryCache = {};
