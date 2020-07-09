@@ -14,7 +14,7 @@ block content
 
 			ul.mb-0
 				li Mining difficulty adjusts automatically every block.
-				li The graphs belove show the difficulty time series for the last #{coinConfig.difficultyAdjustmentBlockOffset} with a granularity of #{coinConfig.difficultyAdjustmentBlockCount}, even thou actual difficulty change for every new block. This as been done to reduce the load on the explorer.
+				li The graphs belove show the difficulty time series for the last #{coinConfig.difficultyAdjustmentBlockOffset} with a granularity of #{coinConfig.difficultyAdjustmentBlockCount}, even though actual difficulty changes for every new block. This has been done to reduce the load on the explorer.
 				li The adjustment aims to maintain an average block-mining time of #{coinConfig.targetBlockTimeMinutes} minutes.
 				li A growth in the difficulty indicates that the average block-mining time during the previous 144 blocks was less than #{coinConfig.targetBlockTimeMinutes} minutes (due to more miners joining the network and 'searching' / 'mining' for blocks).
 				li A drop in difficulty indicates miners have left the network so finding each block is adjusted to be 'easier' for the smaller number remaining.
