@@ -27,16 +27,17 @@ html(lang="en")
 	body.bg-dark
 		nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
 			div.container
-				a.navbar-brand(href="https://www.bitcoincash.org")
-					span
-						if (coinConfig.logoUrlsByNetwork && coinConfig.logoUrlsByNetwork[activeBlockchain])
-							img.header-image(src=coinConfig.logoUrlsByNetwork[activeBlockchain], alt="logo")
-						else
+				span
+					if (coinConfig.logoUrlsByNetwork && coinConfig.logoUrlsByNetwork[activeBlockchain])
+						img.header-image(src=coinConfig.logoUrlsByNetwork[activeBlockchain], alt="logo")
+					else
+						a(href="/")
 							img.header-image(src="/img/logo/bch.svg", alt="logo")
 
-						if (coinConfig.siteTitlesByNetwork && coinConfig.siteTitlesByNetwork[activeBlockchain])
-							span #{coinConfig.siteTitlesByNetwork[activeBlockchain]}
-						else
+					if (coinConfig.siteTitlesByNetwork && coinConfig.siteTitlesByNetwork[activeBlockchain])
+						span #{coinConfig.siteTitlesByNetwork[activeBlockchain]}
+					else
+						a.navbar-brand(href="https://www.bitcoincash.org")
 							span BitcoinCash.org
 						
 				button.navbar-toggler.navbar-toggler-right(type="button", data-toggle="collapse", data-target="#navbarNav", aria-label="collapse navigation")
