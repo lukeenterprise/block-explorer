@@ -89,14 +89,6 @@ block content
 									- var startTimeAgo = moment.duration(uptimeSeconds * 1000);
 									span #{startTimeAgo.format()}
 
-							div.row
-								div.summary-table-label Warnings
-								div.summary-table-content.text-monospace
-									if (getblockchaininfo.warnings && getblockchaininfo.warnings.trim().length > 0)
-										span.text-danger #{getblockchaininfo.warnings}
-									else
-										span None
-
 				div.card.shadow-sm.mb-3
 					div.card-body.px-2.px-sm-3
 						h3.h6.mb-0 Network Info
