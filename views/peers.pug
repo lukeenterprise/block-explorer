@@ -76,7 +76,7 @@ block content
 									each item, index in peerSummary.servicesSummary
 										tr(class=(index >= 5 ? "services-hidden-rows" : false))
 											td.data-cell.font-weight-bold #{index + 1}
-											- var serviceNames = utils.serviceBitsToName(item[0]).join(",")
+											- var serviceNames = utils.serviceBitsToName(item[0]).join(",\n")
 											- if (serviceNames == '') {serviceNames = 'None'}
 											td.data-cell.text-monospace #{serviceNames}
 											td.data-cell.text-monospace #{item[1].toLocaleString()}
