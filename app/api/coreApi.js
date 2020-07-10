@@ -356,28 +356,6 @@ function getTxCountStats(dataPtCount, blockStart, blockEnd) {
 	});
 }
 
-//function getSmartFeeEstimates(mode, confTargetBlockCounts) {
-//	return new Promise(function(resolve, reject) {
-//		var promises = [];
-//		for (var i = 0; i < confTargetBlockCounts.length; i++) {
-//			promises.push(getSmartFeeEstimate(mode, confTargetBlockCounts[i]));
-//		}
-//
-//		Promise.all(promises).then(function(results) {
-//			resolve(results);
-//
-//		}).catch(function(err) {
-//			reject(err);
-//		});
-//	});
-//}
-//
-//function getSmartFeeEstimate(mode, confTargetBlockCount) {
-//	return tryCacheThenRpcApi(miscCache, "getSmartFeeEstimate-" + mode + "-" + confTargetBlockCount, 5 * ONE_MIN, function() {
-//		return rpcApi.getSmartFeeEstimate(mode, confTargetBlockCount);
-//	});
-//}
-
 function getPeerSummary() {
 	return new Promise(function(resolve, reject) {
 		tryCacheThenRpcApi(miscCache, "getpeerinfo", ONE_SEC, rpcApi.getPeerInfo).then(function(getpeerinfo) {
@@ -1015,8 +993,6 @@ module.exports = {
 	getChainTxStats: getChainTxStats,
 	getMempoolDetails: getMempoolDetails,
 	getTxCountStats: getTxCountStats,
-//	getSmartFeeEstimates: getSmartFeeEstimates,
-//	getSmartFeeEstimate: getSmartFeeEstimate,
 	getUtxoSetSummary: getUtxoSetSummary,
 	getNetworkHashrate: getNetworkHashrate,
 	getBlockStats: getBlockStats,

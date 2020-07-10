@@ -62,10 +62,6 @@ function getMempoolTxids() {
 	return getRpcDataWithParams({method:"getrawmempool", parameters:[false]});
 }
 
-function getSmartFeeEstimate(mode="CONSERVATIVE", confTargetBlockCount) {
-	return getRpcDataWithParams({method:"estimatesmartfee", parameters:[confTargetBlockCount, mode]});
-}
-
 function getNetworkHashrate(blockCount=144) {
 	return getRpcDataWithParams({method:"getnetworkhashps", parameters:[blockCount]});
 }
@@ -544,7 +540,6 @@ module.exports = {
 	getAddress: getAddress,
 	getPeerInfo: getPeerInfo,
 	getChainTxStats: getChainTxStats,
-	getSmartFeeEstimate: getSmartFeeEstimate,
 	getUtxoSetSummary: getUtxoSetSummary,
 	getNetworkHashrate: getNetworkHashrate,
 	getBlockStats: getBlockStats,
