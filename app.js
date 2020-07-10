@@ -534,18 +534,6 @@ app.use(function(req, res, next) {
 		}
 	}
 
-	// theme
-	if (!req.session.uiTheme) {
-		var cookieValue = req.cookies['user-setting-uiTheme'];
-
-		if (cookieValue) {
-			req.session.uiTheme = cookieValue;
-
-		} else {
-			req.session.uiTheme = "";
-		}
-	}
-
 	// blockPage.showTechSummary
 	if (!req.session.blockPageShowTechSummary) {
 		var cookieValue = req.cookies['user-setting-blockPageShowTechSummary'];
