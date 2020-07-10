@@ -620,13 +620,23 @@ app.use(function(req, res, next) {
 	var memdiff = process.memoryUsage().heapUsed - req.startMem;
 
 	debugPerfLog("Finished action '%s' in %d ms", req.path, time);
+	next();
 });
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
-	var err = new Error('Not Found');
-	err.status = 404;
-	next(err);
+	res.status(404);
+	res.format({
+		html: function () {
+		  res.render('404', { url: req.url })
+		},
+		json: function () {
+		  res.json({ error: 'Not found' })
+		},
+		default: function () {
+		  res.type('txt').send('Not found')
+		}
+	  })
 });
 
 /// error handlers
