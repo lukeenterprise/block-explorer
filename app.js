@@ -63,12 +63,6 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 
-// ref: https://blog.stigok.com/post/disable-pug-debug-output-with-expressjs-web-app
-app.engine('pug', (path, options, fn) => {
-	options.debug = false;
-	return pug.__express.call(null, path, options, fn);
-});
-
 app.set('view engine', 'pug');
 
 // basic http authentication
