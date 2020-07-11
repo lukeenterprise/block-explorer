@@ -513,16 +513,7 @@ app.use(function(req, res, next) {
 	}
 
 	// homepage banner
-	if (!req.session.hideHomepageBanner) {
-		var cookieValue = req.cookies['user-setting-hideHomepageBanner'];
-
-		if (cookieValue) {
-			req.session.hideHomepageBanner = cookieValue;
-
-		} else {
-			req.session.hideHomepageBanner = "false";
-		}
-	}
+	req.session.hideHomepageBanner = "true";
 
 	res.locals.currencyFormatType = req.session.currencyFormatType;
 	global.currencyFormatType = req.session.currencyFormatType;
