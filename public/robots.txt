@@ -4,4 +4,3 @@ Disallow: /rpc*
 Disallow: /tx-stats
 Disallow: /peers
 Disallow: /unconfirmed-tx
-Disallow: /block-analysis/

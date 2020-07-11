@@ -119,10 +119,6 @@ router.get("/block-tx-summaries/:blockHeight/:txids", function(req, res, next) {
 
 	var results = [];
 
-	promises.push(new Promise(function(resolve, reject) {
-		coreApi.buildBlockAnalysisData(blockHeight, txids, 0, results, resolve);
-	}));
-
 	Promise.all(promises).then(function() {
 		res.json(results);
 

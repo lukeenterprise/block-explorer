@@ -804,53 +804,6 @@ router.get("/block/:blockHash", function(req, res, next) {
 	});
 });
 
-router.get("/block-analysis/:blockHashOrHeight", function(req, res, next) {
-	var blockHashOrHeight = req.params.blockHashOrHeight;
-
-	var goWithBlockHash = function(blockHash) {
-		var blockHash = blockHash;
-
-		res.locals.blockHash = blockHash;
-
-		res.locals.result = {};
-
-		var txResults = [];
-
-		var promises = [];
-
-		res.locals.result = {};
-
-		coreApi.getBlockByHash(blockHash).then(function(block) {
-			res.locals.result.getblock = block;
-
-			res.render("block-analysis");
-
-			next();
-
-		}).catch(function(err) {
-			res.locals.pageErrors.push(utils.logError("943h84ehedr", err));
-
-			res.render("block-analysis");
-
-			next();
-		});
-	};
-
-	if (!isNaN(blockHashOrHeight)) {
-		coreApi.getBlockByHeight(parseInt(blockHashOrHeight)).then(function(blockByHeight) {
-			goWithBlockHash(blockByHeight.hash);
-		});
-	} else {
-		goWithBlockHash(blockHashOrHeight);
-	}
-});
-
-router.get("/block-analysis", function(req, res, next) {
-	res.render("block-analysis-search");
-
-	next();
-});
-
 router.get("/tx/:transactionId", function(req, res, next) {
 	var txid = req.params.transactionId;
 
