@@ -17,29 +17,7 @@ block content
 			
 			hr
 
-			if (payoutAddressForMiner)
-				div.alert.alert-primary.shadow-sm.pb-0
-					div.float-left(style="width: 50px; height: 50px; font-size: 18px;")
-						i.fas.fa-certificate.fa-2x(style="margin-top: 10px;")
-
-					h4.alert-heading.h6.font-weight-bold #{coinConfig.name} Fun
-
-					p
-						span This looks like a miner payout address for  
-						span.font-weight-bold #{payoutAddressForMiner.name}
-						if (coinConfig.miningPoolsConfigUrls.length > 1)
-							span (see the configurations:
-							each item, index in coinConfig.miningPoolsConfigUrls
-								if (index > 0)
-									span ,
-								a(href=item) config ##{index + 1}
-							span )
-						else
-							span (see the configuration
-							a(href=coinConfig.miningPoolsConfigUrls[0]) here
-							span )
-
-			else if (global.specialAddresses[address] && global.specialAddresses[address].type == "fun")
+			if (global.specialAddresses[address] && global.specialAddresses[address].type == "fun")
 				div.alert.alert-primary.shadow-sm.pb-0
 					div.float-left(style="width: 50px; height: 50px; font-size: 18px;")
 						i.fas.fa-certificate.fa-2x(style="margin-top: 10px;")

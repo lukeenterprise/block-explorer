@@ -199,7 +199,6 @@ function getBlockByHash(blockHash) {
 				block.coinbaseTx = tx;
 				block.totalFees = utils.getBlockTotalFeesFromCoinbaseTxAndBlockHeight(tx, block.height);
 				block.subsidy = coinConfig.blockRewardFunction(block.height, global.activeBlockchain);
-				block.miner = utils.getMinerFromCoinbaseTx(tx);
 
 				resolve(block);
 
@@ -221,7 +220,6 @@ function getBlockByHeightReal(blockHeight) {
 				block.coinbaseTx = tx;
 				block.totalFees = utils.getBlockTotalFeesFromCoinbaseTxAndBlockHeight(tx, block.height);
 				block.subsidy = coinConfig.blockRewardFunction(block.height, global.activeBlockchain);
-				block.miner = utils.getMinerFromCoinbaseTx(tx);
 
 				resolve(block);
 

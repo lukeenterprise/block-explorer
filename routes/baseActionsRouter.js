@@ -63,8 +63,7 @@ router.get("/", function(req, res, next) {
 	var promises = [];
 
 	promises.push(coreApi.getMempoolInfo());
-	promises.push(coreApi.getMiningInfo());
-
+	
 	// This is a placeholder for fee estimate in case we would need it in the future
 	promises.push(0);
 
@@ -991,14 +990,6 @@ router.get("/address/:address", function(req, res, next) {
 				res.locals.addressObj["isCashAddr"]=true;
 			} catch(err3) {
 				//res.locals.pageErrors.push(utils.logError("address parsing error", err3));
-			}
-		}
-	}
-
-	if (global.miningPoolsConfigs) {
-		for (var i = 0; i < global.miningPoolsConfigs.length; i++) {
-			if (global.miningPoolsConfigs[i].payout_addresses[address]) {
-				res.locals.payoutAddressForMiner = global.miningPoolsConfigs[i].payout_addresses[address];
 			}
 		}
 	}

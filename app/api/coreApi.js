@@ -233,10 +233,6 @@ function getMempoolTxids() {
 	return rpcApi.getMempoolTxids();
 }
 
-function getMiningInfo() {
-	return tryCacheThenRpcApi(miscCache, "getMiningInfo", 30 * ONE_SEC, rpcApi.getMiningInfo);
-}
-
 function getUptimeSeconds() {
 	return tryCacheThenRpcApi(miscCache, "getUptimeSeconds", ONE_SEC, rpcApi.getUptimeSeconds);
 }
@@ -827,7 +823,6 @@ function getBlockByHashWithTransactions(blockHash, txLimit, txOffset) {
 				if (txsResult.transactions && txsResult.transactions.length > 0) {
 					block.coinbaseTx = txsResult.transactions[0];
 					block.totalFees = utils.getBlockTotalFeesFromCoinbaseTxAndBlockHeight(block.coinbaseTx, block.height);
-					block.miner = utils.getMinerFromCoinbaseTx(block.coinbaseTx);
 				}
 
 				// if we're on page 2, we don't really want the coinbase tx in the tx list anymore
@@ -973,7 +968,6 @@ module.exports = {
 	getNetTotals: getNetTotals,
 	getMempoolInfo: getMempoolInfo,
 	getMempoolTxids: getMempoolTxids,
-	getMiningInfo: getMiningInfo,
 	getBlockByHeight: getBlockByHeight,
 	getBlocksByHeight: getBlocksByHeight,
 	getBlockByHash: getBlockByHash,

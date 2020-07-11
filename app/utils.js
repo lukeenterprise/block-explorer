@@ -376,59 +376,7 @@ function logMemoryUsage() {
 	var mbTotal = process.memoryUsage().heapTotal / 1024 / 1024;
 	mbTotal = Math.round(mbTotal * 100) / 100;
 
-	//debugLog("memoryUsage: heapUsed=" + mbUsed + ", heapTotal=" + mbTotal + ", ratio=" + parseInt(mbUsed / mbTotal * 100));
-}
-
-function getMinerFromCoinbaseTx(tx) {
-	if (tx == null || tx.vin == null || tx.vin.length == 0) {
-		return null;
-	}
-
-	var minerInfo = [];
-	if (global.miningPoolsConfigs) {
-		for (var i = 0; i < global.miningPoolsConfigs.length; i++) {
-			var miningPoolsConfig = global.miningPoolsConfigs[i];
-
-			for (var payoutAddress in miningPoolsConfig.payout_addresses) {
-				if (miningPoolsConfig.payout_addresses.hasOwnProperty(payoutAddress)) {
-					if (tx.vout && tx.vout.length > 0 && tx.vout[0].scriptPubKey && tx.vout[0].scriptPubKey.addresses && tx.vout[0].scriptPubKey.addresses.length > 0) {
-						if (tx.vout[0].scriptPubKey.addresses[0] == payoutAddress) {
-							var minerInfo = miningPoolsConfig.payout_addresses[payoutAddress];
-							minerInfo.identifiedBy = "payout address " + payoutAddress;
-							minerInfo.coinbaseAscii = hex2ascii(tx.vin[0].coinbase);
-
-							return minerInfo;
-						}
-					}
-				}
-			}
-
-			for (var coinbaseTag in miningPoolsConfig.coinbase_tags) {
-				if (miningPoolsConfig.coinbase_tags.hasOwnProperty(coinbaseTag)) {
-					var coinbase = hex2ascii(tx.vin[0].coinbase).toLowerCase();
-					var coinbase_tag= coinbaseTag.toLowerCase();
-					if (coinbase.toLowerCase().indexOf(coinbase_tag) != -1) {
-						var minerInfo = miningPoolsConfig.coinbase_tags[coinbaseTag];
-						minerInfo.identifiedBy = "coinbase tag '" + coinbaseTag + "'";
-						minerInfo.coinbaseAscii = hex2ascii(tx.vin[0].coinbase);
-
-						return minerInfo;
-					}
-				}
-			}
-
-			for (var blockHash in miningPoolsConfig.block_hashes) {
-				if (blockHash == tx.blockhash) {
-					var minerInfo = miningPoolsConfig.block_hashes[blockHash];
-					minerInfo.identifiedBy = "known block hash '" + blockHash + "'";
-
-					return minerInfo;
-				}
-			}
-		}
-	}
-	minerInfo.coinbaseAscii=hex2ascii(tx.vin[0].coinbase);
-	return minerInfo;
+	debugLog("memoryUsage: heapUsed=" + mbUsed + ", heapTotal=" + mbTotal + ", ratio=" + parseInt(mbUsed / mbTotal * 100));
 }
 
 function getTxTotalInputOutputValues(tx, txInputs, blockHeight) {
@@ -814,7 +762,6 @@ module.exports = {
 	seededRandom: seededRandom,
 	seededRandomIntBetween: seededRandomIntBetween,
 	logMemoryUsage: logMemoryUsage,
-	getMinerFromCoinbaseTx: getMinerFromCoinbaseTx,
 	getBlockTotalFeesFromCoinbaseTxAndBlockHeight: getBlockTotalFeesFromCoinbaseTxAndBlockHeight,
 	refreshExchangeRates: refreshExchangeRates,
 	parseExponentStringDouble: parseExponentStringDouble,

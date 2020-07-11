@@ -160,17 +160,7 @@ block content
 									div.summary-table-content.text-monospace.text-danger
 										- var currencyValue = new Decimal(blockRewardMax).minus(totalOutputValue);
 										include includes/value-display.pug
-
-							- var minerInfo = utils.getMinerFromCoinbaseTx(result.getrawtransaction);
-							if (minerInfo)
-								div.row
-									div.summary-table-label Miner
-									div.summary-table-content.text-monospace
-										if (minerInfo.identifiedBy)
-											small.data-tag.bg-primary(data-toggle="tooltip", title=("Identified by: " + minerInfo.identifiedBy)) #{minerInfo.name}
-										else
-											small.data-tag.bg-primary #{minerInfo.name}
-
+										
 						else
 
 							- var feePaid = new Decimal(totalInputValue).minus(totalOutputValue);

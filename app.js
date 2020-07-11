@@ -89,38 +89,6 @@ process.on("unhandledRejection", (reason, p) => {
 	debugLog("Unhandled Rejection at: Promise", p, "reason:", reason, "stack:", (reason != null ? reason.stack : "null"));
 });
 
-function loadMiningPoolConfigs() {
-	debugLog("Loading mining pools config");
-
-	global.miningPoolsConfigs = [];
-
-	var miningPoolsConfigDir = path.join(__dirname, "public", "txt", "mining-pools-configs", global.coinConfig.ticker);
-
-	fs.readdir(miningPoolsConfigDir, function(err, files) {
-		if (err) {
-			utils.logError("3ufhwehe", err, {configDir:miningPoolsConfigDir, desc:"Unable to scan directory"});
-
-			return;
-		}
-
-		files.forEach(function(file) {
-			var filepath = path.join(miningPoolsConfigDir, file);
-
-			var contents = fs.readFileSync(filepath, 'utf8');
-
-			global.miningPoolsConfigs.push(JSON.parse(contents));
-		});
-
-		for (var i = 0; i < global.miningPoolsConfigs.length; i++) {
-			for (var x in global.miningPoolsConfigs[i].payout_addresses) {
-				if (global.miningPoolsConfigs[i].payout_addresses.hasOwnProperty(x)) {
-					global.specialAddresses[x] = {type:"minerPayout", minerInfo:global.miningPoolsConfigs[i].payout_addresses[x]};
-				}
-			}
-		}
-	});
-}
-
 function getSourcecodeProjectMetadata() {
 	var options = {
 		url: "https://api.github.com/repos/sickpig/bch-rpc-explorer",
@@ -468,8 +436,6 @@ app.continueStartup = function() {
 		}
 	}
 
-
-	loadMiningPoolConfigs();
 
 	getSourcecodeProjectMetadata();
 	if (config.demoSite) {
