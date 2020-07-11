@@ -33,12 +33,12 @@ html(lang="en")
 							img.header-image(src="/img/logo/bch.svg", alt="logo")
 							span.navbar-brand Testnet Explorer
 
-				span.pull-right.navbar-text hosted by
+				span(class="pull-right navbar-text") hosted by
 					a(href="https://www.bitcoincash.org") BitcoinCash.org
 
 
 		div.row.justify-content-center
-				form(method="post", action="/search" style="width: 500px;")
+				form(method="post", action="/search" style="width: 450px;")
 							input(type="hidden", name="_csrf", value=csrfToken)
 							div(class="input-group input-group-sm")
 								input(type="text", class="form-control form-control-sm", name="query", placeholder="block height/hash, txid, address", value=(query))

@@ -187,6 +187,7 @@ router.get("/search", function(req, res, next) {
 
 router.post("/search", function(req, res, next) {
 	if (!req.body.query) {
+		req.session.userMessageType = "dark"
 		req.session.userMessage = "Enter a block height, block hash, or transaction id.";
 
 		res.redirect("/");

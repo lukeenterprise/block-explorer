@@ -36,24 +36,27 @@ hr {
 }
 
 a {
-	color: #FFFFFF
+	color: #F59332
 }
 
 .btn-primary {
     color: #f2f3f4;
     background-color: #4D4D4D;
-    border-color: #5aa8fc;
+    border-color: #4D4D4D;
 }
 .btn-primary:hover {
     color: #fff;
     background-color: #F59332;
-    border-color: #288efb;
+    border-color: #F59332;
 }
 .btn-primary.focus,
 .btn-primary:focus {
     color: #fff;
-    background-color: #3494fb;
-    border-color: #288efb;
+    background-color: #F59332;
+    border-color: #F59332;
     box-shadow: 0 0 0 0.2rem rgba(113, 179, 251, 0.5);
 }
 
+.navbar-dark .navbar-text a {
+    color: #F59332;
+}
