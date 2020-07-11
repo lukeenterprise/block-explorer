@@ -109,8 +109,6 @@ router.get("/", function(req, res, next) {
 
 		coreApi.getBlocksByHeight(blockHeights).then(function(latestBlocks) {
 			res.locals.latestBlocks = latestBlocks;
-			res.locals.blocksUntilDifficultyAdjustment = ((res.locals.difficultyPeriod + 1) * coinConfig.difficultyAdjustmentBlockCount) - latestBlocks[0].height;
-
 
 			Promise.all(promises).then(function(promiseResults) {
 				res.locals.mempoolInfo = promiseResults[0];
@@ -160,80 +158,6 @@ router.get("/changeSetting", function(req, res, next) {
 	}
 
 	res.redirect(req.headers.referer);
-});
-
-router.get("/blocks", function(req, res, next) {
-	var limit = config.site.browseBlocksPageSize;
-	var offset = 0;
-	var sort = "desc";
-
-	if (req.query.limit) {
-		limit = parseInt(req.query.limit);
-	}
-
-	if (req.query.offset) {
-		offset = parseInt(req.query.offset);
-	}
-
-	if (req.query.sort) {
-		sort = req.query.sort;
-	}
-
-	res.locals.limit = limit;
-	res.locals.offset = offset;
-	res.locals.sort = sort;
-	res.locals.paginationBaseUrl = "/blocks";
-
-	coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
-		res.locals.blockCount = getblockchaininfo.blocks;
-		res.locals.blockOffset = offset;
-
-		var blockHeights = [];
-		if (sort == "desc") {
-			for (var i = (getblockchaininfo.blocks - offset); i > (getblockchaininfo.blocks - offset - limit - 1); i--) {
-				if (i >= 0) {
-					blockHeights.push(i);
-				}
-			}
-		} else {
-			for (var i = offset - 1; i < (offset + limit); i++) {
-				if (i >= 0) {
-					blockHeights.push(i);
-				}
-			}
-		}
-
-		var promises = [];
-
-		promises.push(coreApi.getBlocksByHeight(blockHeights));
-
-		promises.push(coreApi.getBlocksStatsByHeight(blockHeights));
-
-		Promise.all(promises).then(function(promiseResults) {
-			res.locals.blocks = promiseResults[0];
-			var rawblockstats = promiseResults[1];
-
-			if (rawblockstats != null && rawblockstats.length > 0 && rawblockstats[0] != null) {
-				res.locals.blockstatsByHeight = {};
-
-				for (var i = 0; i < rawblockstats.length; i++) {
-					var blockstats = rawblockstats[i];
-
-					res.locals.blockstatsByHeight[blockstats.height] = blockstats;
-				}
-			}
-
-			res.render("blocks");
-		}).catch(function(err) {
-			res.locals.pageErrors.push(utils.logError("32974hrbfbvc", err));
-
-			res.render("blocks");
-		});
-	}).catch(function(err) {
-		res.locals.userMessage = "Error: " + err;
-
-		res.render("blocks");
-	});
 });
 
 allSettled = function(promiseList) {

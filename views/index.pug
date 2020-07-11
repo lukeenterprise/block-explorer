@@ -27,36 +27,11 @@ block content
 						div.card-body.px-2.px-sm-3
 							div.row
 								div.col
-									h3.h6.mb-0 Latest Blocks
-									
-								div.col.text-right
-									a(href="/blocks") See more &raquo;
-
+									h3.h6.mb-0 Blocks
 							hr
 
 							- var blocks = latestBlocks;
 							- var blockOffset = 0;
 
 							include includes/blocks-list.pug
-							
-							if (false)
-								div.card.shadow-sm.mb-3
-									div.card-header
-										div.row
-											div.col
-												h3.h6.mb-0 Latest Blocks
-													if (getblockchaininfo.initialblockdownload)
-														small  (#{(getblockchaininfo.headers - getblockchaininfo.blocks).toLocaleString()} behind)
-
-											div.col
-												span(style="float: right;")
-													a(href="/blocks")
-														span  Browse Blocks &raquo;
-
-									div.card-body
-
-										- var blocks = latestBlocks;
-										- var blockOffset = 0;
-
-										include includes/blocks-list.pug
 											
