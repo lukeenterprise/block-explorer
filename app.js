@@ -7,7 +7,7 @@ var path = require('path');
 var dotenv = require("dotenv");
 var fs = require('fs');
 
-var configPaths = [ path.join(os.homedir(), '.config', 'bch-rpc-explorer.env'), path.join(process.cwd(), '.env') ];
+var configPaths = [path.join(os.homedir(), '.config', 'bch-rpc-explorer.env'), path.join(process.cwd(), '.env')];
 configPaths.filter(fs.existsSync).forEach(path => {
 	console.log('Loading env file:', path);
 	dotenv.config({ path });
@@ -52,7 +52,7 @@ var marked = require("marked");
 var package_json = require('./package.json');
 global.appVersion = package_json.version;
 
-var crawlerBotUserAgentStrings = [ "Googlebot", "Bingbot", "Slurp", "DuckDuckBot", "Baiduspider", "YandexBot", "Sogou", "Exabot", "facebot", "ia_archiver" ];
+var crawlerBotUserAgentStrings = ["Googlebot", "Bingbot", "Slurp", "DuckDuckBot", "Baiduspider", "YandexBot", "Sogou", "Exabot", "facebot", "ia_archiver"];
 
 var baseActionsRouter = require('./routes/baseActionsRouter.js');
 var apiActionsRouter = require('./routes/apiRouter.js');
@@ -97,14 +97,14 @@ function getSourcecodeProjectMetadata() {
 		}
 	};
 
-	request(options, function(error, response, body) {
+	request(options, function (error, response, body) {
 		if (error == null && response && response.statusCode && response.statusCode == 200) {
 			var responseBody = JSON.parse(body);
 
 			global.sourcecodeProjectMetadata = responseBody;
 
 		} else {
-			utils.logError("3208fh3ew7eghfg", {error:error, response:response, body:body});
+			utils.logError("3208fh3ew7eghfg", { error: error, response: response, body: body });
 		}
 	});
 }
@@ -112,7 +112,7 @@ function getSourcecodeProjectMetadata() {
 function loadChangelog() {
 	var filename = "CHANGELOG.md";
 
-	fs.readFile(path.join(__dirname, filename), 'utf8', function(err, data) {
+	fs.readFile(path.join(__dirname, filename), 'utf8', function (err, data) {
 		if (err) {
 			utils.logError("2379gsd7sgd334", err);
 
@@ -126,7 +126,7 @@ function loadHistoricalDataForChain(chain) {
 	debugLog(`Loading historical data for chain=${chain}`);
 
 	if (global.coinConfig.historicalData) {
-		global.coinConfig.historicalData.forEach(function(item) {
+		global.coinConfig.historicalData.forEach(function (item) {
 			if (item.chain == chain) {
 				if (item.type == "blockheight") {
 					global.specialBlocks[item.blockHash] = item;
@@ -135,7 +135,7 @@ function loadHistoricalDataForChain(chain) {
 					global.specialTransactions[item.txid] = item;
 
 				} else if (item.type == "address") {
-					global.specialAddresses[item.address] = {type:"fun", addressInfo:item};
+					global.specialAddresses[item.address] = { type: "fun", addressInfo: item };
 				}
 			}
 		});
@@ -146,8 +146,8 @@ function verifyRpcConnection() {
 	if (!global.activeBlockchain) {
 		debugLog(`Verifying RPC connection...`);
 
-		coreApi.getNetworkInfo().then(function(getnetworkinfo) {
-			coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
+		coreApi.getNetworkInfo().then(function (getnetworkinfo) {
+			coreApi.getBlockchainInfo().then(function (getblockchaininfo) {
 				global.activeBlockchain = getblockchaininfo.chain;
 
 				// we've verified rpc connection, no need to keep trying
@@ -155,10 +155,10 @@ function verifyRpcConnection() {
 
 				onRpcConnectionVerified(getnetworkinfo, getblockchaininfo);
 
-			}).catch(function(err) {
+			}).catch(function (err) {
 				utils.logError("329u0wsdgewg6ed", err);
 			});
-		}).catch(function(err) {
+		}).catch(function (err) {
 			utils.logError("32ugegdfsde", err);
 		});
 	}
@@ -247,7 +247,7 @@ function refreshUtxoSetSummary() {
 	// flag that we're working on calculating UTXO details (to differentiate cases where we don't have the details and we're not going to try computing them)
 	global.utxoSetSummaryPending = true;
 
-	coreApi.getUtxoSetSummary().then(function(result) {
+	coreApi.getUtxoSetSummary().then(function (result) {
 		global.utxoSetSummary = result;
 
 		result.lastUpdated = Date.now();
@@ -266,7 +266,7 @@ function refreshNetworkVolumes() {
 	var cutoff1d = new Date().getTime() - (60 * 60 * 24 * 1000);
 	var cutoff7d = new Date().getTime() - (60 * 60 * 24 * 7 * 1000);
 
-	coreApi.getBlockchainInfo().then(function(result) {
+	coreApi.getBlockchainInfo().then(function (result) {
 		var promises = [];
 
 		var blocksPerDay = 144 + 20; // 20 block padding
@@ -285,7 +285,7 @@ function refreshNetworkVolumes() {
 		var endBlockTime1d = 0;
 		var endBlockTime7d = 0;
 
-		Promise.all(promises).then(function(results) {
+		Promise.all(promises).then(function (results) {
 			var volume1d = new Decimal(0);
 			var volume7d = new Decimal(0);
 
@@ -318,7 +318,7 @@ function refreshNetworkVolumes() {
 				debugLog("Volume 1d", volume1d);
 				debugLog("Volume 7d", volume7d);
 
-				global.networkVolume = {d1:{amt:volume1d, blocks:blocks1d, startBlock:startBlock, endBlock:endBlock1d, startTime:results[0].time, endTime:endBlockTime1d}};
+				global.networkVolume = { d1: { amt: volume1d, blocks: blocks1d, startBlock: startBlock, endBlock: endBlock1d, startTime: results[0].time, endTime: endBlockTime1d } };
 
 				debugLog(`Network volume: ${JSON.stringify(global.networkVolume)}`);
 
@@ -330,7 +330,7 @@ function refreshNetworkVolumes() {
 }
 
 
-app.onStartup = function() {
+app.onStartup = function () {
 	global.appStartTime = new Date().getTime();
 	global.config = config;
 	global.coinConfig = coins[config.coin];
@@ -343,9 +343,9 @@ app.onStartup = function() {
 	loadChangelog();
 
 	if (global.sourcecodeVersion == null && fs.existsSync('.git')) {
-		simpleGit(".").log(["-n 1"], function(err, log) {
+		simpleGit(".").log(["-n 1"], function (err, log) {
 			if (err) {
-				utils.logError("3fehge9ee", err, {desc:"Error accessing git repo"});
+				utils.logError("3fehge9ee", err, { desc: "Error accessing git repo" });
 
 				debugLog(`Starting ${global.coinConfig.ticker} RPC Explorer, v${global.appVersion} (code: unknown commit)`);
 
@@ -366,7 +366,7 @@ app.onStartup = function() {
 	}
 }
 
-app.continueStartup = function() {
+app.continueStartup = function () {
 	var rpcCred = config.credentials.rpc;
 	debugLog(`Connecting to RPC node at ${rpcCred.host}:${rpcCred.port}`);
 
@@ -405,11 +405,11 @@ app.continueStartup = function() {
 
 		if (config.addressApi == "electrumx") {
 			if (config.electrumXServers && config.electrumXServers.length > 0) {
-				electrumAddressApi.connectToServers().then(function() {
+				electrumAddressApi.connectToServers().then(function () {
 					global.electrumAddressApi = electrumAddressApi;
 
-				}).catch(function(err) {
-					utils.logError("31207ugf4e0fed", err, {electrumXServers:config.electrumXServers});
+				}).catch(function (err) {
+					utils.logError("31207ugf4e0fed", err, { electrumXServers: config.electrumXServers });
 				});
 			} else {
 				utils.logError("327hs0gde", "You must set the 'BTCEXP_ELECTRUMX_SERVERS' environment variable when BTCEXP_ADDRESS_API=electrumx.");
@@ -427,14 +427,14 @@ app.continueStartup = function() {
 	setInterval(utils.logMemoryUsage, 5000);
 };
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
 	req.startTime = Date.now();
 	req.startMem = process.memoryUsage().heapUsed;
 
 	next();
 });
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
 	// make session available in templates
 	res.locals.session = req.session;
 
@@ -541,7 +541,7 @@ app.use('/', baseActionsRouter);
 app.use('/api/', apiActionsRouter);
 app.use('/snippet/', snippetActionsRouter);
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
 	var time = Date.now() - req.startTime;
 	var memdiff = process.memoryUsage().heapUsed - req.startMem;
 
@@ -550,19 +550,19 @@ app.use(function(req, res, next) {
 });
 
 /// catch 404 and forwarding to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
 	res.status(404);
 	res.format({
 		html: function () {
-		  res.render('404', { url: req.url })
+			res.render('404', { url: req.url })
 		},
 		json: function () {
-		  res.json({ error: 'Not found' })
+			res.json({ error: 'Not found' })
 		},
 		default: function () {
-		  res.type('txt').send('Not found')
+			res.type('txt').send('Not found')
 		}
-	  })
+	})
 });
 
 /// error handlers
@@ -570,7 +570,7 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-	app.use(function(err, req, res, next) {
+	app.use(function (err, req, res, next) {
 		res.status(err.status || 500);
 		res.render('error', {
 			message: err.message,
@@ -581,7 +581,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
 	res.status(err.status || 500);
 	res.render('error', {
 		message: err.message,
