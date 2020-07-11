@@ -1305,18 +1305,6 @@ router.get("/difficulty-history", function(req, res, next) {
 	});
 });
 
-router.get("/about", function(req, res, next) {
-	res.render("about");
-
-	next();
-});
-
-router.get("/tools", function(req, res, next) {
-	res.render("tools");
-
-	next();
-});
-
 router.get("/changelog", function(req, res, next) {
 	res.locals.changelogHtml = marked(global.changelogMarkdown);
 

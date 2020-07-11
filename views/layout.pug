@@ -54,18 +54,6 @@ html(lang="en")
 								li.nav-item
 									a.nav-link.text-warning(title=`Current node's chain: ${activeBlockchain}` data-toggle="tooltip") [#{chainName}]
 
-							if (config.siteTools)
-								li.nav-item.dropdown
-									a.nav-link.dropdown-toggle(href="javascript:void(0)", role="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false")
-										span Tools
-									divi.dropdown-menu.shadow(aria-label="Tools Items")
-										each itemIndex in config.site.prioritizedToolIdsList
-											- var item = config.siteTools[itemIndex];
-
-											a.dropdown-item(href=item.url)
-												i(class=item.fontawesome, style="width: 20px; margin-right: 10px;")
-												span #{item.name}
-
 							if (config.site.header.dropdowns)
 								each dropdown, ddIndex in config.site.header.dropdowns
 									li.nav-item.dropdown
@@ -103,14 +91,6 @@ html(lang="en")
 															i(class="fas fa-check")
 													span #{item.name}
 
-		if (host && port && !homepage && config.site.header.showToolsSubheader)
-			div(id="sub-menu", class="container mb-2 pt-2 d-lg-block d-none border-top", style="")
-				ul(class="nav")
-					each item, index in config.siteTools
-						li(class="nav-item")
-							a(href=item.url, class="nav-link text-white px-2 text-decoration-underline")
-								span #{item.name}
-
 		- var bodyBgColor = "#0c0c0c;";
 		
 		div(class="pb-4 pt-3 pt-md-4", style=("background-color: " + bodyBgColor))
@@ -137,8 +117,6 @@ html(lang="en")
 					block content
 
 				div(style="margin-bottom: 30px;")
-
-				include ./includes/donation-modal.pug
 
 		footer(class="footer border-top border-primary bg-dark pt-3 pb-1 px-3 text-white", style="border-width: 5px !important;")
 			div(class="container")
