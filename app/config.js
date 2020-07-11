@@ -33,7 +33,7 @@ for (var i = 0; i < electrumXServerUriStrings.length; i++) {
   electrumXServers.push({protocol:uri.protocol.substring(0, uri.protocol.length - 1), host:uri.hostname, port:parseInt(uri.port)});
 }
 
-["BTCEXP_DEMO", "BTCEXP_PRIVACY_MODE", "BTCEXP_NO_INMEMORY_RPC_CACHE", "BTCEXP_UI_SHOW_RPC", "BTCEXP_HEADER_BY_HEIGHT_SUPPORT", "BTCEXP_BLOCK_BY_HEIGHT_SUPPORT"].forEach(function(item) {
+["BTCEXP_DEMO", "BTCEXP_PRIVACY_MODE", "BTCEXP_NO_INMEMORY_RPC_CACHE", "BTCEXP_HEADER_BY_HEIGHT_SUPPORT", "BTCEXP_BLOCK_BY_HEIGHT_SUPPORT"].forEach(function(item) {
   if (process.env[item] === undefined) {
     process.env[item] = "false";
   }
@@ -61,11 +61,6 @@ var siteToolsAux = '[ \
 
 var siteToolsJSON = JSON.parse(siteToolsAux)
 
-if (process.env.BTCEXP_UI_SHOW_RPC.toLowerCase() === "true") {
-  siteToolsJSON.push({"name":"RPC Browser", "url":"/rpc-browser", "desc":"Browse the RPC functionality of this node. See docs and execute commands.", "fontawesome":"fas fa-book"})
-  siteToolsJSON.push({"name":"RPC Terminal", "url":"/rpc-terminal", "desc":"Directly execute RPCs against this node.", "fontawesome":"fas fa-terminal"})
-}
-
 module.exports = {
   coin: currentCoin,
 
@@ -74,7 +69,6 @@ module.exports = {
   privacyMode: (process.env.BTCEXP_PRIVACY_MODE.toLowerCase() == "true"),
   slowDeviceMode: (process.env.BTCEXP_SLOW_DEVICE_MODE.toLowerCase() == "true"),
   demoSite: (process.env.BTCEXP_DEMO.toLowerCase() == "true"),
-  showRpc: (process.env.BTCEXP_UI_SHOW_RPC.toLowerCase() === "true"),
   queryExchangeRates: (process.env.BTCEXP_NO_RATES.toLowerCase() != "true"),
   noInmemoryRpcCache: (process.env.BTCEXP_NO_INMEMORY_RPC_CACHE.toLowerCase() == "true"),
   headerByHeightSupport: (process.env.BTCEXP_HEADER_BY_HEIGHT_SUPPORT.toLowerCase() == "true"),
