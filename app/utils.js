@@ -459,71 +459,6 @@ function refreshExchangeRates() {
 	}
 }
 
-// Uses ipstack.com API
-function geoLocateIpAddresses(ipAddresses, provider) {
-	return new Promise(function(resolve, reject) {
-		if (config.privacyMode || config.credentials.ipStackComApiAccessKey === undefined) {
-			resolve({});
-
-			return;
-		}
-
-		var ipDetails = {ips:ipAddresses, detailsByIp:{}};
-
-		var promises = [];
-		for (var i = 0; i < ipAddresses.length; i++) {
-			var ipStr = ipAddresses[i];
-
-			promises.push(new Promise(function(resolve2, reject2) {
-				ipCache.get(ipStr).then(function(result) {
-					if (result.value == null) {
-						var apiUrl = "http://api.ipstack.com/" + result.key + "?access_key=" + config.credentials.ipStackComApiAccessKey;
-
-						debugLog("Requesting IP-geo: " + apiUrl);
-
-						request(apiUrl, function(error, response, body) {
-							if (error) {
-								reject2(error);
-
-							} else {
-								resolve2({needToProcess:true, response:response});
-							}
-						});
-
-					} else {
-						ipDetails.detailsByIp[result.key] = result.value;
-
-						resolve2({needToProcess:false});
-					}
-				});
-			}));
-		}
-
-		Promise.all(promises).then(function(results) {
-			for (var i = 0; i < results.length; i++) {
-				if (results[i].needToProcess) {
-					var res = results[i].response;
-					if (res != null && res["statusCode"] == 200) {
-						var resBody = JSON.parse(res["body"]);
-						var ip = resBody["ip"];
-
-						ipDetails.detailsByIp[ip] = resBody;
-
-						ipCache.set(ip, resBody, 1000 * 60 * 60 * 24 * 365);
-					}
-				}
-			}
-
-			resolve(ipDetails);
-
-		}).catch(function(err) {
-			logError("80342hrf78wgehdf07gds", err);
-
-			reject(err);
-		});
-	});
-}
-
 function parseExponentStringDouble(val) {
 	var [lead,decimal,pow] = val.toString().split(/e|\./);
 	return +pow <= 0
@@ -766,7 +701,6 @@ module.exports = {
 	refreshExchangeRates: refreshExchangeRates,
 	parseExponentStringDouble: parseExponentStringDouble,
 	formatLargeNumber: formatLargeNumber,
-	geoLocateIpAddresses: geoLocateIpAddresses,
 	getTxTotalInputOutputValues: getTxTotalInputOutputValues,
 	rgbToHsl: rgbToHsl,
 	colorHexToRgb: colorHexToRgb,
