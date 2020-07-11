@@ -1,31 +1,16 @@
-var debug = require("debug");
-var debugLog = debug("bchexp:router");
-
 var express = require('express');
-var csurf = require('csurf');
 var router = express.Router();
-var util = require('util');
-var moment = require('moment');
-var bitcoinCore = require("bitcoin-core");
 var qrcode = require('qrcode');
 var bitcoinjs = require('bitcoinjs-lib');
 var cashaddrjs = require('cashaddrjs');
 var sha256 = require("crypto-js/sha256");
 var hexEnc = require("crypto-js/enc-hex");
 var Decimal = require("decimal.js");
-var marked = require("marked");
-var semver = require("semver");
 
 var utils = require('./../app/utils.js');
-var coins = require("./../app/coins.js");
 var config = require("./../app/config.js");
 var coreApi = require("./../app/api/coreApi.js");
 var addressApi = require("./../app/api/addressApi.js");
-var rpcApi = require("./../app/api/rpcApi.js");
-
-const v8 = require('v8');
-
-const forceCsrf = csurf({ ignoreMethods: [] });
 
 router.get("/", function(req, res, next) {
 	if (req.session.host == null || req.session.host.trim() == "") {
@@ -171,177 +156,6 @@ router.get("/", function(req, res, next) {
 	});
 });
 
-router.get("/node-status", function(req, res, next) {
-	coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
-		res.locals.getblockchaininfo = getblockchaininfo;
-
-		coreApi.getNetworkInfo().then(function(getnetworkinfo) {
-			res.locals.getnetworkinfo = getnetworkinfo;
-
-			coreApi.getUptimeSeconds().then(function(uptimeSeconds) {
-				res.locals.uptimeSeconds = uptimeSeconds;
-
-				coreApi.getNetTotals().then(function(getnettotals) {
-					res.locals.getnettotals = getnettotals;
-
-					res.render("node-status");
-
-					next();
-
-				}).catch(function(err) {
-					res.locals.userMessage = "Error getting node status: (id=0), err=" + err;
-
-					res.render("node-status");
-
-					next();
-				});
-			}).catch(function(err) {
-				res.locals.userMessage = "Error getting node status: (id=1), err=" + err;
-
-				res.render("node-status");
-
-				next();
-			});
-		}).catch(function(err) {
-			res.locals.userMessage = "Error getting node status: (id=2), err=" + err;
-
-			res.render("node-status");
-
-			next();
-		});
-	}).catch(function(err) {
-		res.locals.userMessage = "Error getting node status: (id=3), err=" + err;
-
-		res.render("node-status");
-
-		next();
-	});
-});
-
-router.get("/mempool-summary", function(req, res, next) {
-	res.locals.satoshiPerByteBucketMaxima = coinConfig.feeSatoshiPerByteBucketMaxima;
-
-	coreApi.getMempoolInfo().then(function(mempoolinfo) {
-		res.locals.mempoolinfo = mempoolinfo;
-
-		coreApi.getMempoolTxids().then(function(mempooltxids) {
-			var debugMaxCount = 0;
-
-			if (debugMaxCount > 0) {
-				var debugtxids = [];
-				for (var i = 0; i < Math.min(debugMaxCount, mempooltxids.length); i++) {
-					debugtxids.push(mempooltxids[i]);
-				}
-
-				res.locals.mempooltxidChunks = utils.splitArrayIntoChunks(debugtxids, 25);
-
-			} else {
-				res.locals.mempooltxidChunks = utils.splitArrayIntoChunks(mempooltxids, 25);
-			}
-			
-
-			res.render("mempool-summary");
-
-			next();
-		});
-
-	}).catch(function(err) {
-		res.locals.userMessage = "Error: " + err;
-
-		res.render("mempool-summary");
-
-		next();
-	});
-});
-
-router.get("/peers", function(req, res, next) {
-	coreApi.getPeerSummary().then(function(peerSummary) {
-		res.locals.peerSummary = peerSummary;
-
-		var peerIps = [];
-		for (var i = 0; i < peerSummary.getpeerinfo.length; i++) {
-			var ipWithPort = peerSummary.getpeerinfo[i].addr;
-			if (ipWithPort.lastIndexOf(":") >= 0) {
-				var ip = ipWithPort.substring(0, ipWithPort.lastIndexOf(":"));
-				if (ip.trim().length > 0) {
-					peerIps.push(ip.trim());
-				}
-			}
-		}
-
-		if (peerIps.length > 0) {
-			utils.geoLocateIpAddresses(peerIps).then(function(results) {
-				res.locals.peerIpSummary = results;
-
-				res.render("peers");
-
-				next();
-			});
-		} else {
-			res.render("peers");
-
-			next();
-		}
-	}).catch(function(err) {
-		res.locals.userMessage = "Error: " + err;
-
-		res.render("peers");
-
-		next();
-	});
-});
-
-router.post("/connect", function(req, res, next) {
-	var host = req.body.host;
-	var port = req.body.port;
-	var username = req.body.username;
-	var password = req.body.password;
-
-	res.cookie('rpc-host', host);
-	res.cookie('rpc-port', port);
-	res.cookie('rpc-username', username);
-
-	req.session.host = host;
-	req.session.port = port;
-	req.session.username = username;
-
-	var newClient = new bitcoinCore({
-		host: host,
-		port: port,
-		username: username,
-		password: password,
-		timeout: 30000
-	});
-
-	debugLog("created new rpc client: " + newClient);
-
-	global.rpcClient = newClient;
-
-	req.session.userMessage = "<span class='font-weight-bold'>Connected via RPC</span>: " + username + " @ " + host + ":" + port;
-	req.session.userMessageType = "success";
-
-	res.redirect("/");
-});
-
-router.get("/disconnect", function(req, res, next) {
-	res.cookie('rpc-host', "");
-	res.cookie('rpc-port', "");
-	res.cookie('rpc-username', "");
-
-	req.session.host = "";
-	req.session.port = "";
-	req.session.username = "";
-
-	debugLog("destroyed rpc client.");
-
-	global.rpcClient = null;
-
-	req.session.userMessage = "Disconnected from node.";
-	req.session.userMessageType = "success";
-
-	res.redirect("/");
-});
-
 router.get("/changeSetting", function(req, res, next) {
 	if (req.query.name) {
 		req.session[req.query.name] = req.query.value;
@@ -433,52 +247,6 @@ router.get("/blocks", function(req, res, next) {
 	});
 });
 
-router.get("/mining-summary", function(req, res, next) {
-	coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
-		res.locals.currentBlockHeight = getblockchaininfo.blocks;
-
-		res.render("mining-summary");
-
-		next();
-
-	}).catch(function(err) {
-		res.locals.userMessage = "Error: " + err;
-
-		res.render("mining-summary");
-
-		next();
-	});
-});
-
-router.get("/block-stats", function(req, res, next) {
-	if (semver.lt(global.btcNodeSemver, rpcApi.minRpcVersions.getblockstats)) {
-		res.locals.rpcApiUnsupportedError = {rpc:"getblockstats", version:rpcApi.minRpcVersions.getblockstats};
-	}
-
-	coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
-		res.locals.currentBlockHeight = getblockchaininfo.blocks;
-
-		res.render("block-stats");
-
-		next();
-
-	}).catch(function(err) {
-		res.locals.userMessage = "Error: " + err;
-
-		res.render("block-stats");
-
-		next();
-	});
-});
-
-router.get("/decoder", function(req, res, next) {
-	res.locals.decodedScript = "";
-	res.locals.tx = undefined;
-	res.locals.type = "script";
-	res.render("decoder");
-	next();
-});
-
 allSettled = function(promiseList) {
     let results = new Array(promiseList.length);
 
@@ -499,54 +267,6 @@ allSettled = function(promiseList) {
         }
     });
 }
-
-router.post("/decoder", function(req, res, next) {
-	if (!req.body.query) {
-	req.session.userMessage = "Enter a hex-encoded transaction or script";
-	res.redirect("/decoder");
-	return;
-	}
-
-	var promises = [];
-	// Clean up the input in a variety of ways that a cut-paste might have
-	var input = req.body.query.trim();
-	while (input[0] == '"' || input[0] == "'") {
-		input = input.slice(1);
-	}
-	while ((input.length > 0) && ( input[input.length-1] == '"' || input[input.length-1] == "'")) {
-		input = input.slice(0,input.length-1);
-	}
-	if (input.slice(0,2) == "0x") input = input.slice(2);
-	promises.push(coreApi.decodeScript(input));
-	promises.push(coreApi.decodeRawTransaction(input));
-
-	allSettled(promises).then(function(promiseResults) {
-		decodedScript = promiseResults[0];
-		decodedTx = promiseResults[1];
-		res.locals.decodedScript = "";
-		res.locals.tx = " ";
-		if ("txid" in decodedTx) {
-			res.locals.type = "tx";
-			res.locals.userMessage = "";
-			res.locals.tx = decodedTx;
-			res.locals.decodedJson = decodedTx;  // If tx decodes, assume its a tx because tx hex can be decoded as bad scripts
-		} else if ("asm" in decodedScript) {
-			res.locals.type = "script";
-			res.locals.userMessage = "";
-			// FIXME we are mixing routing with view here. What script does
-			// should be done in the views/decoder.pug
-			res.locals.decodedDetails = utils.prettyScript(decodedScript.asm, '\t');
-			res.locals.decodedJson = decodedScript;
-		} else {
-			res.locals.type = "unknown";
-			res.locals.userMessage = "Decode failed";
-			res.locals.tx = {};
-			res.locals.decodedJson = {};
-		}
-		res.render("decoder");
-		next();
-	});
-});
 
 router.get("/search", function(req, res, next) {
 	res.render("search");
@@ -1166,125 +886,6 @@ router.get("/address/:address", function(req, res, next) {
 
 		next();
 	});
-});
-
-router.get("/unconfirmed-tx", function(req, res, next) {
-	var limit = config.site.browseBlocksPageSize;
-	var offset = 0;
-	var sort = "desc";
-
-	if (req.query.limit) {
-		limit = parseInt(req.query.limit);
-	}
-
-	if (req.query.offset) {
-		offset = parseInt(req.query.offset);
-	}
-
-	if (req.query.sort) {
-		sort = req.query.sort;
-	}
-
-	res.locals.limit = limit;
-	res.locals.offset = offset;
-	res.locals.sort = sort;
-	res.locals.paginationBaseUrl = "/unconfirmed-tx";
-
-	coreApi.getMempoolDetails(offset, limit).then(function(mempoolDetails) {
-		res.locals.mempoolDetails = mempoolDetails;
-
-		res.render("unconfirmed-transactions");
-
-		next();
-
-	}).catch(function(err) {
-		res.locals.userMessage = "Error: " + err;
-
-		res.render("unconfirmed-transactions");
-
-		next();
-	});
-});
-
-router.get("/tx-stats", function(req, res, next) {
-	var dataPoints = 100;
-
-	if (req.query.dataPoints) {
-		dataPoints = req.query.dataPoints;
-	}
-
-	if (dataPoints > 250) {
-		dataPoints = 250;
-	}
-
-	var targetBlocksPerDay = 24 * 60 * 60 / global.coinConfig.targetBlockTimeSeconds;
-
-	coreApi.getTxCountStats(dataPoints, 0, "latest").then(function(result) {
-		res.locals.getblockchaininfo = result.getblockchaininfo;
-		res.locals.txStats = result.txCountStats;
-
-		coreApi.getTxCountStats(targetBlocksPerDay / 4, -144, "latest").then(function(result2) {
-			res.locals.txStatsDay = result2.txCountStats;
-
-			coreApi.getTxCountStats(targetBlocksPerDay / 4, -144 * 7, "latest").then(function(result3) {
-				res.locals.txStatsWeek = result3.txCountStats;
-
-				coreApi.getTxCountStats(targetBlocksPerDay / 4, -144 * 30, "latest").then(function(result4) {
-					res.locals.txStatsMonth = result4.txCountStats;
-
-					res.render("tx-stats");
-
-					next();
-				});
-			});
-		});
-	});
-});
-
-router.get("/difficulty-history", function(req, res, next) {
-	coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
-		res.locals.blockCount = getblockchaininfo.blocks;
-
-		res.render("difficulty-history");
-
-		next();
-
-	}).catch(function(err) {
-		res.locals.userMessage = "Error: " + err;
-
-		res.render("difficulty-history");
-
-		next();
-	});
-});
-
-router.get("/changelog", function(req, res, next) {
-	res.locals.changelogHtml = marked(global.changelogMarkdown);
-
-	res.render("changelog");
-
-	next();
-});
-
-router.get("/fun", function(req, res, next) {
-	var sortedList = coins[config.coin].historicalData;
-	sortedList.sort(function(a, b) {
-		if (a.date > b.date) {
-			return 1;
-
-		} else if (a.date < b.date) {
-			return -1;
-
-		} else {
-			return a.type.localeCompare(b.type);
-		}
-	});
-
-	res.locals.historicalData = sortedList;
-
-	res.render("fun");
-
-	next();
 });
 
 module.exports = router;
