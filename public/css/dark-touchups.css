@@ -56,7 +56,36 @@ a {
     border-color: #F59332;
     box-shadow: 0 0 0 0.2rem rgba(113, 179, 251, 0.5);
 }
-
 .navbar-dark .navbar-text a {
     color: #F59332;
+}
+.page-link {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #FFFFFF;
+    background-color: #0c0c0c;
+    border: 1px solid #282d33;
+}
+.page-link:hover {
+    z-index: 2;
+    color: #FFFFFF;
+    text-decoration: none;
+    background-color: #282d33;
+    border-color: #282d33;
+}
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #F59332;
+    border-color: #4D4D4D;
+}
+.page-item.disabled .page-link {
+    color: #000;
+    pointer-events: none;
+    cursor: auto;
+    background-color: #202326;
+    border-color: #282d33;
 }
