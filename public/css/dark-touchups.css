@@ -38,6 +38,10 @@ hr {
 a {
 	color: #F59332
 }
+a:hover {
+    color: #F59332;
+    text-decoration: underline;
+}
 
 .btn-primary {
     color: #f2f3f4;
