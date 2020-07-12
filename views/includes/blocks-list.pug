@@ -3,9 +3,9 @@ div.table-responsive
 		thead
 			tr
 				th.data-header.text-left Block height
-				th.data-header.text-left Timestamp
-				th.data-header.text-left Transactions
-				th.data-header.text-left Size
+				th.data-header.text-right Timestamp
+				th.data-header.text-right Transactions
+				th.data-header.text-right Size
 		tbody
 
 			each block, blockIndex in blocks
@@ -13,9 +13,9 @@ div.table-responsive
 					tr
 						td.data-cell.text-monospace.text-left
 							a(href=("/block-height/" + block.height)) #{block.height.toLocaleString()}
-						td.data-cell.text-monospace.text-left #{moment(new Date(parseInt(block.time) * 1000)).format("L LTS Z UTC")}
-						td.data-cell.text-monospace.text-left #{block.tx.length.toLocaleString()}
-						td.data-cell.text-monospace.text-left #{(block.size / 1000).toLocaleString()}
+						td.data-cell.text-monospace.text-right #{moment(new Date(parseInt(block.time) * 1000)).format("L LTS Z UTC")}
+						td.data-cell.text-monospace.text-right #{block.tx.length.toLocaleString()}
+						td.data-cell.text-monospace.text-right #{(block.size / 1000).toLocaleString()}
 							small  kB
 
 						- var lastBlock = block;
