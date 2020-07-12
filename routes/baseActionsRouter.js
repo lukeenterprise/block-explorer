@@ -34,31 +34,14 @@ router.get("/", function(req, res, next) {
 
 	res.locals.homepage = true;
 
-	// don't need timestamp on homepage "blocks-list", this flag disables
-	res.locals.hideTimestampColumn = true;
-
 	// variables used by blocks-list.pug
 	res.locals.offset = 0;
 	res.locals.sort = "desc";
 
-	var feeConfTargets = [1, 6, 144, 1008];
-	res.locals.feeConfTargets = feeConfTargets;
-
-
 	var promises = [];
-
-	promises.push(coreApi.getMempoolInfo());
-	
-	// This is a placeholder for fee estimate in case we would need it in the future
-	promises.push(0);
-
-	promises.push(coreApi.getNetworkHashrate(144));
-	promises.push(coreApi.getNetworkHashrate(1008));
 
 	coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
 		res.locals.getblockchaininfo = getblockchaininfo;
-
-		res.locals.difficultyPeriod = parseInt(Math.floor(getblockchaininfo.blocks / coinConfig.difficultyAdjustmentBlockCount));
 
 		var blockHeights = [];
 		if (getblockchaininfo.blocks) {
@@ -74,15 +57,6 @@ router.get("/", function(req, res, next) {
 
 		// promiseResults[5]
 		promises.push(coreApi.getBlocksStatsByHeight(blockHeights));
-
-		// promiseResults[6]
-		promises.push(new Promise(function(resolve, reject) {
-			coreApi.getBlockHeaderByHeight(coinConfig.difficultyAdjustmentBlockCount * res.locals.difficultyPeriod).then(function(difficultyPeriodFirstBlockHeader) {
-
-				resolve(difficultyPeriodFirstBlockHeader);
-			});
-		}));
-
 
 		if (getblockchaininfo.chain !== 'regtest') {
 			var targetBlocksPerDay = 24 * 60 * 60 / global.coinConfig.targetBlockTimeSeconds;
@@ -101,10 +75,6 @@ router.get("/", function(req, res, next) {
 			for (var i = 0; i < chainTxStatsIntervals.length; i++) {
 				promises.push(coreApi.getChainTxStats(chainTxStatsIntervals[i]));
 			}
-		}
-
-		if (getblockchaininfo.chain !== 'regtest') {
-			promises.push(coreApi.getChainTxStats(getblockchaininfo.blocks - 1));
 		}
 
 		coreApi.getBlocksByHeight(blockHeights).then(function(latestBlocks) {
@@ -233,27 +203,6 @@ router.get("/blocks", function(req, res, next) {
 		res.render("blocks");
 	});
 });
-
-allSettled = function(promiseList) {
-    let results = new Array(promiseList.length);
-
-    return new Promise((ok, rej) => {
-
-        let fillAndCheck = function(i) {
-            return function(ret) {
-                results[i] = ret;
-                for(let j = 0; j < results.length; j++) {
-                    if (results[j] == null) return;
-                }
-                ok(results);
-            }
-        };
-
-        for(let i=0;i<promiseList.length;i++) {
-            promiseList[i].then(fillAndCheck(i), fillAndCheck(i));
-        }
-    });
-}
 
 router.get("/search", function(req, res, next) {
 	res.render("search");
