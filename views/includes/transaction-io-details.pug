@@ -50,14 +50,7 @@ div.row.text-monospace
 											small (ascii) - 
 											small #{utils.hex2ascii(txVin.coinbase)}
 											br
-											small
-												a(href="javascript:void(0)" onclick="$('#coinbase-data-hex').show(); $(this).hide(); return false;") show raw
-
-										div(id="coinbase-data-hex", style="display: none;")
-											small.font-weight-bold data
-											small (hex) - 
-											small.word-wrap #{txVin.coinbase}
-
+											small.border-dotted(title=`${txVin.coinbase}`, data-toggle="tooltip") show raw
 
 									else
 										div.word-wrap

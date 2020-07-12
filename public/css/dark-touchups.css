@@ -56,6 +56,19 @@ a {
     border-color: #F59332;
     box-shadow: 0 0 0 0.2rem rgba(113, 179, 251, 0.5);
 }
+.btn-primary.disabled,
+.btn-primary:disabled {
+    color: #f2f3f4;
+    background-color: #F59332;
+    border-color: #F59332;
+}
+.btn-primary:not(:disabled):not(.disabled).active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.show > .btn-primary.dropdown-toggle {
+    color: #fff;
+    background-color: #F59332;
+    border-color: #F59332;
+}
 .navbar-dark .navbar-text a {
     color: #F59332;
 }
