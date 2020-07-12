@@ -163,167 +163,47 @@ div.tab-content
 				div.col-md-6.mb-3
 					div.card.shadow-sm(style="height: 100%;")
 						div.card-body.px-2.px-md-3
-							h3.h6.mb-0 Fees Summary
+							h3.h6.mb-0 Technical Details
 							hr
 
 							div.clearfix
 								div.row
-									div.summary-split-table-label Total
+									div.summary-split-table-label Difficulty
 									div.summary-split-table-content.text-monospace
-										if (result.blockstats.totalfee)
-											- var currencyValue = new Decimal(result.blockstats.totalfee).dividedBy(coinConfig.baseCurrencyUnit.multiplier);
-											include ./value-display.pug
+										- var difficultyData = utils.formatLargeNumber(result.getblock.difficulty, 3);
+										
+										span(title=parseFloat(result.getblock.difficulty).toLocaleString(), data-toggle="tooltip")
+											span #{difficultyData[0]}
+											span  x 10
+											sup #{difficultyData[1].exponent}
+							
+								div.row
+									div.summary-split-table-label Version
+									div.summary-split-table-content.text-monospace 0x#{result.getblock.versionHex}
+										span.text-muted  (decimal: #{result.getblock.version})
 
-										else
-										- var currencyValue = new Decimal(result.getblock.totalFees);
-											include ./value-display.pug
+									div.summary-split-table-label Nonce
+									div.summary-split-table-content.text-monospace #{result.getblock.nonce}
 
+								div.row
+									div.summary-split-table-label Bits
+									div.summary-split-table-content.text-monospace #{result.getblock.bits}
 
-								if (result.getblock.totalFees > 0)
-									div.row
-										div.summary-split-table-label Average Rate
-										div.summary-split-table-content.text-monospace
-											if (result.blockstats.totalfee)
-												- var currencyValue = new Decimal(result.blockstats.totalfee).dividedBy(coinConfig.baseCurrencyUnit.multiplier);
-												include ./value-display.pug
+								div.row
+									div.summary-split-table-label Merkle Root
+									div.summary-split-table-content.text-monospace #{result.getblock.merkleroot}
 
-											else
-												- var currencyValue = new Decimal(result.getblock.totalFees);
-												include ./value-display.pug
+								div.row
+									div.summary-split-table-label Chainwork
+									div.summary-split-table-content.text-monospace
+										- var chainworkData = utils.formatLargeNumber(parseInt("0x" + result.getblock.chainwork), 2);
 
-									if (result.blockstats)
-										div.row
-											div.summary-split-table-label Rate Percentiles
-												br
-												small.font-weight-normal (sat/B)
-											div.summary-split-table-content.text-monospace
-												div.clearfix
-													each item, itemIndex in [10, 25, 50, 75, 90]
-														div.float-left.mr-3
-															span.font-weight-bold #{item}%
-															br
-
-															if (result.blockstats.feerate_percentiles)
-																span #{JSON.stringify(result.blockstats.feerate_percentiles[itemIndex])}
-															else
-																span -
-
-									if (result.getblock.totalFees > 0)
-										div.row
-											div.summary-split-table-label
-												span.border-dotted(title="These are the fee rates (fee per tx weight) for transactions in this block - min, avg, and max.", data-toggle="tooltip") Fee Rates
-												br
-												small (min, avg, max)
-												
-											div.summary-split-table-content.text-monospace
-												if (result.blockstats.minfeerate)
-													span #{result.blockstats.minfeerate.toLocaleString()}
-													small.ml-1 sat/B
-												else
-													span ?
-
-												br
-
-												if (result.blockstats.avgfeerate)
-													span #{result.blockstats.avgfeerate.toLocaleString()}
-													small.ml-1 sat/B
-
-												else
-												- var currencyValue = new Decimal(result.getblock.totalFees).dividedBy(result.getblock.size).times(coinConfig.baseCurrencyUnit.multiplier).toDecimalPlaces(1);
-												span #{currencyValue} 
-
-												br
-
-												if (result.blockstats.maxfeerate)
-													span #{result.blockstats.maxfeerate.toLocaleString()}
-													small.ml-1 sat/B
-												else
-													span ?
-
-									if (result.blockstats)
-										div.row
-											div.summary-split-table-label
-												span.border-dotted(title="These are the overall fee values (min, avg, max) for transactions included in this block. The min and max values correspond to specific transactions in this block; the avg is an estimate.", data-toggle="tooltip") Fee Values
-												br
-												small (min, avg, max)
-											div.summary-split-table-content.text-monospace
-												if (result.blockstats.minfee)
-													- var currencyValue = new Decimal(result.blockstats.minfee).dividedBy(coinConfig.baseCurrencyUnit.multiplier);
-													include ./value-display.pug
-												else
-													span 0
-
-												br
-
-												if (result.blockstats.avgfee)
-													- var currencyValue = new Decimal(result.blockstats.avgfee).dividedBy(coinConfig.baseCurrencyUnit.multiplier);
-													include ./value-display.pug
-												else
-													span 0
-												
-												br
-
-												if (result.blockstats.maxfee)
-													- var currencyValue = new Decimal(result.blockstats.maxfee);
-													include ./value-display.pug
-												else
-													span 0
-
-		div.card.shadow-sm.mb-3
-			div.card-body.px-2.px-md-3
-				div.clearfix
-					div.float-left.mr-2
-						h3.h6.mb-0 Technical Details
-
-					div.float-right
-						if (!session.blockPageShowTechSummary || session.blockPageShowTechSummary == "true")
-							a(href="/changeSetting?name=blockPageShowTechSummary&value=false") hide
-						else
-							a(href="/changeSetting?name=blockPageShowTechSummary&value=true") show
-
-				div(id="tech-details-wrapper", class=(session.blockPageShowTechSummary == "true" ? "" : "d-none"))
-					hr
-
-					div.row
-						div.col-md-6
-							div.row
-								div.summary-split-table-label Difficulty
-								div.summary-split-table-content.text-monospace
-									- var difficultyData = utils.formatLargeNumber(result.getblock.difficulty, 3);
-									
-									span(title=parseFloat(result.getblock.difficulty).toLocaleString(), data-toggle="tooltip")
-										span #{difficultyData[0]}
+										span #{chainworkData[0]}
 										span  x 10
-										sup #{difficultyData[1].exponent}
-
-							div.row
-								div.summary-split-table-label Version
-								div.summary-split-table-content.text-monospace 0x#{result.getblock.versionHex}
-									span.text-muted  (decimal: #{result.getblock.version})
-
-								div.summary-split-table-label Nonce
-								div.summary-split-table-content.text-monospace #{result.getblock.nonce}
-
-							div.row
-								div.summary-split-table-label Bits
-								div.summary-split-table-content.text-monospace #{result.getblock.bits}
-
-							div.row
-								div.summary-split-table-label Merkle Root
-								div.summary-split-table-content.text-monospace #{result.getblock.merkleroot}
-
-							div.row
-								div.summary-split-table-label Chainwork
-								div.summary-split-table-content.text-monospace
-									- var chainworkData = utils.formatLargeNumber(parseInt("0x" + result.getblock.chainwork), 2);
-
-									span #{chainworkData[0]}
-									span  x 10
-									sup #{chainworkData[1].exponent}
-									small hashes
-									
-									span.text-muted  (#{result.getblock.chainwork.replace(/^0+/, '')})
-									
+										sup #{chainworkData[1].exponent}
+										small hashes
+										
+										span.text-muted  (#{result.getblock.chainwork.replace(/^0+/, '')})
 
 		div.card.shadow-sm.mb-3
 			div.card-body.px-2.px-md-3
