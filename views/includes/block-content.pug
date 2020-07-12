@@ -26,30 +26,6 @@ ul.nav.nav-tabs.mb-3
 
 div.tab-content
 	div.tab-pane.active(id="tab-details", role="tabpanel")
-		if (global.specialBlocks && global.specialBlocks[result.getblock.hash])
-			div.alert.alert-primary.shadow-sm.pb-0
-				div.float-left(style="width: 55px; height: 55px; font-size: 18px;")
-					i.fas.fa-certificate.fa-2x(style="margin-top: 10px;")
-				h4.alert-heading.h6.font-weight-bold #{coinConfig.name} Fun
-
-				// special transaction info
-				- var sbInfo = global.specialBlocks[result.getblock.hash];
-				if (sbInfo.alertBodyHtml)
-					p
-						span !{sbInfo.alertBodyHtml}
-
-						if (sbInfo.referenceUrl && sbInfo.referenceUrl.trim().length > 0 && sbInfo.alertBodyHtml.indexOf(sbInfo.referenceUrl) == -1)
-							span  
-								a(href=sbInfo.referenceUrl) Read more
-
-				else
-					p
-						span #{sbInfo.summary}
-
-						if (sbInfo.referenceUrl && sbInfo.referenceUrl.trim().length > 0)
-							span  
-								a(href=sbInfo.referenceUrl) Read more
-
 		div.row
 			- var sumTableLabelClass = (result.blockstats != null ? "summary-split-table-label" : "summary-table-label");
 			- var sumTableValueClass = (result.blockstats != null ? "summary-split-table-content" : "summary-table-content");
