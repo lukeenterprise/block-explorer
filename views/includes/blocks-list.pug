@@ -6,7 +6,6 @@ div.table-responsive
 				th.data-header.text-left Timestamp
 				th.data-header.text-left Transactions
 				th.data-header.text-left Size
-
 		tbody
 
 			each block, blockIndex in blocks
@@ -14,13 +13,9 @@ div.table-responsive
 					tr
 						td.data-cell.text-monospace.text-left
 							a(href=("/block-height/" + block.height)) #{block.height.toLocaleString()}
-						
-						td.data-cell.text-monospace.text-left
-							- var timestampHuman = block.time;
-							include timestamp-human.pug								
-
+						td.data-cell.text-monospace.text-left #{moment(new Date(parseInt(block.time) * 1000)).format("L LTS Z UTC")}
 						td.data-cell.text-monospace.text-left #{block.tx.length.toLocaleString()}
-
-						td.data-cell.text-monospace.text-left 2
+						td.data-cell.text-monospace.text-left #{(block.size / 1000).toLocaleString()}
+							small  kB
 
 						- var lastBlock = block;
