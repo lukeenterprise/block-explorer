@@ -4,7 +4,7 @@
 - }
 
 nav(aria-label="Page navigation")
-	ul.pagination.pagination-lg.justify-content-center.flex-wrap
+	ul.pagination.pagination-sm.justify-content-center.flex-wrap
 		li.page-item(class=(pageNumber == 1 ? "disabled" : false))
 			a.page-link(href=(pageNumber == 1 ? "javascript:void(0)" : paginationUrlFunction(pageNumber - 1)), aria-label="Previous")
 				span(aria-hidden="true") &laquo;
