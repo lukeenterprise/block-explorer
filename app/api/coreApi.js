@@ -508,9 +508,7 @@ function getBlocksStatsByHeight(blockHeights) {
 }
 
 function getBlockByHash(blockHash) {
-	return tryCacheThenRpcApi(blockCache, "getBlockByHash-" + blockHash, ONE_HR, function() {
-		return rpcApi.getBlockByHash(blockHash);
-	});
+	return rpcApi.getBlockByHash(blockHash);
 }
 
 function getBlocksByHash(blockHashes) {
