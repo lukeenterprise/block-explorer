@@ -142,18 +142,20 @@ router.post("/search", function (req, res, next) {
 	req.session.query = req.body.query;
 
 	if (query.length == 64) {
-		coreApi.getBlockByHash(query).then(function (blockByHash) {
-			if (blockByHash) {
-				res.redirect("/block/" + query);
+		coreApi.getRawTransaction(query).then(function (tx) {
+			if (tx) {
+				res.redirect("/tx/" + query);
 
 				return;
 			}
-			coreApi.getRawTransaction(query).then(function (tx) {
-				if (tx) {
-					res.redirect("/tx/" + query);
+
+			coreApi.getBlockByHash(query).then(function (blockByHash) {
+				if (blockByHash) {
+					res.redirect("/block/" + query);
 
 					return;
 				}
+
 				coreApi.getAddress(rawCaseQuery).then(function (validateaddress) {
 					if (validateaddress && validateaddress.isvalid) {
 						res.redirect("/address/" + rawCaseQuery);
