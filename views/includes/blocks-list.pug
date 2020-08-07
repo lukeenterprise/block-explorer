@@ -13,7 +13,7 @@ div.table-responsive
 					tr
 						td.data-cell.text-monospace.text-left
 							a(href=("/block-height/" + block.height)) #{block.height.toLocaleString()}
-						td.data-cell.text-monospace.text-right #{moment(new Date(parseInt(block.time) * 1000)).format("L LTS Z UTC")}
+						td.data-cell.text-monospace.text-right #{moment(new Date(parseInt(block.time) * 1000)).toISOString()}
 						td.data-cell.text-monospace.text-right #{block.tx.length.toLocaleString()}
 						td.data-cell.text-monospace.text-right #{(block.size / 1000).toLocaleString()}
 							small  kB
