@@ -1,10 +1,13 @@
-FROM node:8 as builder
-WORKDIR /workspace
-COPY . .
-RUN npm install
+FROM node:14.8.0
 
-FROM node:8-alpine
-WORKDIR /workspace
-COPY --from=builder /workspace .
-CMD npm start
-EXPOSE 3002
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+ENV NODE_ENV="production"
+
+RUN npm install --production
+
+COPY . .
+
+CMD ["./bin/cli.js", "--help"]
