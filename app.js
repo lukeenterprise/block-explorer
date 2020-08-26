@@ -340,6 +340,24 @@ app.onStartup = function () {
 	global.specialBlocks = {};
 	global.specialAddresses = {};
 
+	// Get selected explorer info, remove it from list of siblings to link to
+	let allExplorers = new Map([
+		["mainnet", new utils.ExplorerLink("mainnet", "Mainnet Explorer", "https://explorer.bitcoincash.org")],
+		["testnet", new utils.ExplorerLink("testnet", "Testnet Explorer", "https://texplorer.bitcoincash.org")],
+	]);
+	const selectedExplorerKey = process.env.BTCEXP_EXPLORER_INSTANCE;
+	global.selectedExplorer = allExplorers.get(selectedExplorerKey);
+	if (!allExplorers.delete(selectedExplorerKey)) {
+		// an invalid explorer-instance was configured, it's better to exit than proceed with a default
+		debugLog(`Invalid explorer-instance \`${selectedExplorerKey}\` configured, please use --help and pick a valid one:`);
+		process.exit(1);
+	}
+	let otherExplorers = []
+	for (const [key, value] of allExplorers) {
+		otherExplorers.push(value);
+	}
+	global.siblingExplorers = otherExplorers;
+
 	loadChangelog();
 
 	if (global.sourcecodeVersion == null && fs.existsSync('.git')) {
@@ -468,6 +486,8 @@ app.use(function (req, res, next) {
 
 	res.locals.pageErrors = [];
 
+	res.locals.allExplorers = global.allExplorers;
+	res.locals.siblingExplorers = global.siblingExplorers
 
 	// currency format type
 	if (!req.session.currencyFormatType) {

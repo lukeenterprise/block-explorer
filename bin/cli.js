@@ -34,6 +34,8 @@ const args = require('meow')(`
       --ganalytics-tracking <tid>    tracking id for google analytics [default: disabled]
       --sentry-url <sentry-url>      sentry url [default: disabled]
 
+      --explorer-instance <inst>     is a 'mainnet' or 'testnet' explorer? [default: 'mainnet']
+
       -e, --node-env <env>           nodejs environment mode [default: production]
       -h, --help                     output usage information
       -v, --version                  output version number
@@ -54,6 +56,7 @@ const args = require('meow')(`
             , bitcoindUri: {alias:'b'}, bitcoindHost: {alias:'H'}, bitcoindPort: {alias:'P'}
             , bitcoindCookie: {alias:'c'}, bitcoindUser: {alias:'u'}, bitcoindPass: {alias:'w'}, redisUrl: {alias:'r'}
             , demo: {type:'boolean'}, rpcAllowall: {type:'boolean'}, electrumxServers: {alias:'E'}
+            , explorerInstance: {type:'string', default:'mainnet'}
             , nodeEnv: {alias:'e', default:'production'}
             , privacyMode: {type:'boolean'}, slowDeviceMode: {type:'boolean'}
             } }

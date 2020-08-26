@@ -13,6 +13,13 @@ var coins = require("./coins.js");
 var coinConfig = coins[config.coin];
 var redisCache = require("./redisCache.js");
 
+class ExplorerLink {
+	constructor(identifier, displayName, url) {
+		this.identifier = identifier;
+		this.displayName = displayName;
+		this.url = url;
+	}
+};
 
 var exponentScales = [
 	{ val: 1000000000000000000000000000000000, name: "?", abbreviation: "V", exponent: "33" },
@@ -664,6 +671,7 @@ function outputTypeName(outputType) {
 }
 
 module.exports = {
+	ExplorerLink: ExplorerLink,
 	reflectPromise: reflectPromise,
 	redirectToConnectPageIfNeeded: redirectToConnectPageIfNeeded,
 	hex2ascii: hex2ascii,

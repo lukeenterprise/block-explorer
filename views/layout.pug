@@ -24,14 +24,16 @@ html(lang="en")
 	body.bg-dark
 		nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
 			div.container
-				span
+				span(class="dropdown")
 					a(href="/")
-						if (global.activeBlockchain == "main")
-							img.header-image(src="/img/logo/bch.svg", alt="logo")
-							span.navbar-brand Explorer
-						else if (global.activeBlockchain == "test")
-							img.header-image(src="/img/logo/bch.svg", alt="logo")
-							span.navbar-brand Testnet Explorer
+						img.header-image(src="/img/logo/bch.svg", alt="logo")
+						span.navbar-brand #{selectedExplorer.displayName}
+					button(class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+					div(class="dropdown-menu")
+						each explorer in siblingExplorers
+							a(class="dropdown-item" href=`${explorer.url}`)
+								img.header-image(src="/img/logo/bch.svg", alt="logo")
+								span.navbar-brand #{explorer.displayName}
 
 				span(class="pull-right navbar-text") hosted by 
 					a(href="https://www.bitcoincash.org") BitcoinCash.org
