@@ -15,25 +15,25 @@ var redisCache = require("./redisCache.js");
 
 
 var exponentScales = [
-	{val:1000000000000000000000000000000000, name:"?", abbreviation:"V", exponent:"33"},
-	{val:1000000000000000000000000000000, name:"?", abbreviation:"W", exponent:"30"},
-	{val:1000000000000000000000000000, name:"?", abbreviation:"X", exponent:"27"},
-	{val:1000000000000000000000000, name:"yotta", abbreviation:"Y", exponent:"24"},
-	{val:1000000000000000000000, name:"zetta", abbreviation:"Z", exponent:"21"},
-	{val:1000000000000000000, name:"exa", abbreviation:"E", exponent:"18"},
-	{val:1000000000000000, name:"peta", abbreviation:"P", exponent:"15", textDesc:"Q"},
-	{val:1000000000000, name:"tera", abbreviation:"T", exponent:"12", textDesc:"T"},
-	{val:1000000000, name:"giga", abbreviation:"G", exponent:"9", textDesc:"B"},
-	{val:1000000, name:"mega", abbreviation:"M", exponent:"6", textDesc:"M"},
-	{val:1000, name:"kilo", abbreviation:"K", exponent:"3", textDesc:"thou"},
-	{val:1, name:"", abbreviation:"", exponent:"", textDesc:""}
+	{ val: 1000000000000000000000000000000000, name: "?", abbreviation: "V", exponent: "33" },
+	{ val: 1000000000000000000000000000000, name: "?", abbreviation: "W", exponent: "30" },
+	{ val: 1000000000000000000000000000, name: "?", abbreviation: "X", exponent: "27" },
+	{ val: 1000000000000000000000000, name: "yotta", abbreviation: "Y", exponent: "24" },
+	{ val: 1000000000000000000000, name: "zetta", abbreviation: "Z", exponent: "21" },
+	{ val: 1000000000000000000, name: "exa", abbreviation: "E", exponent: "18" },
+	{ val: 1000000000000000, name: "peta", abbreviation: "P", exponent: "15", textDesc: "Q" },
+	{ val: 1000000000000, name: "tera", abbreviation: "T", exponent: "12", textDesc: "T" },
+	{ val: 1000000000, name: "giga", abbreviation: "G", exponent: "9", textDesc: "B" },
+	{ val: 1000000, name: "mega", abbreviation: "M", exponent: "6", textDesc: "M" },
+	{ val: 1000, name: "kilo", abbreviation: "K", exponent: "3", textDesc: "thou" },
+	{ val: 1, name: "", abbreviation: "", exponent: "", textDesc: "" }
 ];
 
 var ipMemoryCache = {};
 
 var ipRedisCache = null;
 if (redisCache.active) {
-	var onRedisCacheEvent = function(cacheType, eventType, cacheKey) {
+	var onRedisCacheEvent = function (cacheType, eventType, cacheKey) {
 		global.cacheStats.redis[eventType]++;
 		//debugLog(`cache.${cacheType}.${eventType}: ${cacheKey}`);
 	}
@@ -42,31 +42,31 @@ if (redisCache.active) {
 }
 
 var ipCache = {
-	get:function(key) {
-		return new Promise(function(resolve, reject) {
+	get: function (key) {
+		return new Promise(function (resolve, reject) {
 			if (ipMemoryCache[key] != null) {
-				resolve({key:key, value:ipMemoryCache[key]});
+				resolve({ key: key, value: ipMemoryCache[key] });
 
 				return;
 			}
 
 			if (ipRedisCache != null) {
-				ipRedisCache.get("ip-" + key).then(function(redisResult) {
+				ipRedisCache.get("ip-" + key).then(function (redisResult) {
 					if (redisResult != null) {
-						resolve({key:key, value:redisResult});
+						resolve({ key: key, value: redisResult });
 
 						return;
 					}
 
-					resolve({key:key, value:null});
+					resolve({ key: key, value: null });
 				});
 
 			} else {
-				resolve({key:key, value:null});
+				resolve({ key: key, value: null });
 			}
 		});
 	},
-	set:function(key, value, expirationMillis) {
+	set: function (key, value, expirationMillis) {
 		ipMemoryCache[key] = value;
 
 		if (ipRedisCache != null) {
@@ -130,23 +130,23 @@ function splitArrayIntoChunksByChunkCount(array, chunkCount) {
 
 function getRandomString(length, chars) {
 	var mask = '';
-	
+
 	if (chars.indexOf('a') > -1) {
 		mask += 'abcdefghijklmnopqrstuvwxyz';
 	}
-	
+
 	if (chars.indexOf('A') > -1) {
 		mask += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	}
-	
+
 	if (chars.indexOf('#') > -1) {
 		mask += '0123456789';
 	}
-	
+
 	if (chars.indexOf('!') > -1) {
 		mask += '~`!@#$%^&*()_+-={}[]:";\'<>?,./|\\';
 	}
-	
+
 	var result = '';
 	for (var i = length; i > 0; --i) {
 		result += mask[Math.floor(Math.random() * mask.length)];
@@ -200,13 +200,13 @@ function formatCurrencyAmountWithForcedDecimalPlaces(amount, formatType, forcedD
 				// toFixed will keep trailing zeroes
 				var baseStr = addThousandsSeparators(dec.toFixed(decimalPlaces));
 
-				return {val:baseStr, currencyUnit:formatInfo.name, simpleVal:baseStr};
+				return { val: baseStr, currencyUnit: formatInfo.name, simpleVal: baseStr };
 
 			} else {
 				// toDP will strip trailing zeroes
 				var baseStr = addThousandsSeparators(dec.toDP(decimalPlaces));
 
-				var returnVal = {currencyUnit:formatInfo.name, simpleVal:baseStr};
+				var returnVal = { currencyUnit: formatInfo.name, simpleVal: baseStr };
 
 				// max digits in "val"
 				var maxValDigits = config.site.valueDisplayMaxLargeDigits;
@@ -233,7 +233,7 @@ function formatCurrencyAmountWithForcedDecimalPlaces(amount, formatType, forcedD
 
 				var baseStr = addThousandsSeparators(dec.toDecimalPlaces(decimalPlaces));
 
-				return {val:baseStr, currencyUnit:formatInfo.name, simpleVal:baseStr};
+				return { val: baseStr, currencyUnit: formatInfo.name, simpleVal: baseStr };
 			} else {
 				return formatCurrencyAmountWithForcedDecimalPlaces(amount, coinConfig.defaultCurrencyUnit.name, forcedDecimalPlaces);
 			}
@@ -293,9 +293,9 @@ function satoshisPerUnitOfActiveCurrency() {
 		var exchangedAmt = parseInt(dec);
 
 		if (exchangeType == "eur") {
-			return {amt:addThousandsSeparators(exchangedAmt), unit:`${unitName}/€`};
+			return { amt: addThousandsSeparators(exchangedAmt), unit: `${unitName}/€` };
 		} else {
-			return {amt:addThousandsSeparators(exchangedAmt), unit:`${unitName}/$`};
+			return { amt: addThousandsSeparators(exchangedAmt), unit: `${unitName}/$` };
 		}
 
 	}
@@ -338,7 +338,7 @@ function seededRandomIntBetween(seed, min, max) {
 	return (min + (max - min) * rand);
 }
 
-function ellipsize(str, length, ending="…") {
+function ellipsize(str, length, ending = "…") {
 	if (str.length <= length) {
 		return str;
 
@@ -398,7 +398,7 @@ function getTxTotalInputOutputValues(tx, txInputs, blockHeight) {
 							totalInputValue = totalInputValue.plus(new Decimal(vout.value));
 						}
 					} catch (err) {
-						logError("2397gs0gsse", err, {txid:tx.txid, vinIndex:i});
+						logError("2397gs0gsse", err, { txid: tx.txid, vinIndex: i });
 					}
 				}
 			}
@@ -408,10 +408,10 @@ function getTxTotalInputOutputValues(tx, txInputs, blockHeight) {
 			totalOutputValue = totalOutputValue.plus(new Decimal(tx.vout[i].value));
 		}
 	} catch (err) {
-		logError("2308sh0sg44", err, {tx:tx, txInputs:txInputs, blockHeight:blockHeight});
+		logError("2308sh0sg44", err, { tx: tx, txInputs: txInputs, blockHeight: blockHeight });
 	}
 
-	return {input:totalInputValue, output:totalOutputValue};
+	return { input: totalInputValue, output: totalOutputValue };
 }
 
 function getBlockTotalFeesFromCoinbaseTxAndBlockHeight(coinbaseTx, blockHeight) {
@@ -438,7 +438,7 @@ function refreshExchangeRates() {
 	}
 
 	if (coins[config.coin].exchangeRateData) {
-		request(coins[config.coin].exchangeRateData.jsonUrl, function(error, response, body) {
+		request(coins[config.coin].exchangeRateData.jsonUrl, function (error, response, body) {
 			if (error == null && response && response.statusCode && response.statusCode == 200) {
 				var responseBody = JSON.parse(body);
 
@@ -453,17 +453,17 @@ function refreshExchangeRates() {
 					debugLog("Unable to get exchange rate data");
 				}
 			} else {
-				logError("39r7h2390fgewfgds", {error:error, response:response, body:body});
+				logError("39r7h2390fgewfgds", { error: error, response: response, body: body });
 			}
 		});
 	}
 }
 
 function parseExponentStringDouble(val) {
-	var [lead,decimal,pow] = val.toString().split(/e|\./);
+	var [lead, decimal, pow] = val.toString().split(/e|\./);
 	return +pow <= 0
-		? "0." + "0".repeat(Math.abs(pow)-1) + lead + decimal
-		: lead + ( +pow >= decimal.length ? (decimal + "0".repeat(+pow-decimal.length)) : (decimal.slice(0,+pow)+"."+decimal.slice(+pow)));
+		? "0." + "0".repeat(Math.abs(pow) - 1) + lead + decimal
+		: lead + (+pow >= decimal.length ? (decimal + "0".repeat(+pow - decimal.length)) : (decimal.slice(0, +pow) + "." + decimal.slice(+pow)));
 }
 
 function formatLargeNumber(n, decimalPlaces) {
@@ -484,12 +484,12 @@ function rgbToHsl(r, g, b) {
 	var max = Math.max(r, g, b), min = Math.min(r, g, b);
 	var h, s, l = (max + min) / 2;
 
-	if(max == min){
+	if (max == min) {
 		h = s = 0; // achromatic
-	}else{
+	} else {
 		var d = max - min;
 		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-		switch(max){
+		switch (max) {
 			case r: h = (g - b) / d + (g < b ? 6 : 0); break;
 			case g: h = (b - r) / d + 2; break;
 			case b: h = (r - g) / d + 4; break;
@@ -497,13 +497,13 @@ function rgbToHsl(r, g, b) {
 		h /= 6;
 	}
 
-	return {h:h, s:s, l:l};
+	return { h: h, s: s, l: l };
 }
 
 function colorHexToRgb(hex) {
 	// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
 	var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-	hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+	hex = hex.replace(shorthandRegex, function (m, r, g, b) {
 		return r + r + g + g + b + b;
 	});
 
@@ -522,8 +522,8 @@ function colorHexToHsl(hex) {
 
 
 // https://stackoverflow.com/a/31424853/673828
-const reflectPromise = p => p.then(v => ({v, status: "resolved" }),
-							e => ({e, status: "rejected" }));
+const reflectPromise = p => p.then(v => ({ v, status: "resolved" }),
+	e => ({ e, status: "rejected" }));
 
 global.errorStats = {};
 
@@ -542,7 +542,7 @@ function logError(errorId, err, optionalUserData = null) {
 	global.errorStats[errorId].count++;
 	global.errorStats[errorId].lastSeen = new Date().getTime();
 
-	global.errorLog.push({errorId:errorId, error:err, userData:optionalUserData, date:new Date()});
+	global.errorLog.push({ errorId: errorId, error: err, userData: optionalUserData, date: new Date() });
 	while (global.errorLog.length > 100) {
 		global.errorLog.splice(0, 1);
 	}
@@ -553,7 +553,7 @@ function logError(errorId, err, optionalUserData = null) {
 		debugErrorVerboseLog("Stack: " + err.stack);
 	}
 
-	var returnVal = {errorId:errorId, error:err};
+	var returnVal = { errorId: errorId, error: err };
 	if (optionalUserData) {
 		returnVal.userData = optionalUserData;
 	}
@@ -562,33 +562,33 @@ function logError(errorId, err, optionalUserData = null) {
 }
 
 function buildQrCodeUrls(strings) {
-	return new Promise(function(resolve, reject) {
+	return new Promise(function (resolve, reject) {
 		var promises = [];
 		var qrcodeUrls = {};
 
 		for (var i = 0; i < strings.length; i++) {
-			promises.push(new Promise(function(resolve2, reject2) {
-				buildQrCodeUrl(strings[i], qrcodeUrls).then(function() {
+			promises.push(new Promise(function (resolve2, reject2) {
+				buildQrCodeUrl(strings[i], qrcodeUrls).then(function () {
 					resolve2();
 
-				}).catch(function(err) {
+				}).catch(function (err) {
 					reject2(err);
 				});
 			}));
 		}
 
-		Promise.all(promises).then(function(results) {
+		Promise.all(promises).then(function (results) {
 			resolve(qrcodeUrls);
 
-		}).catch(function(err) {
+		}).catch(function (err) {
 			reject(err);
 		});
 	});
 }
 
 function buildQrCodeUrl(str, results) {
-	return new Promise(function(resolve, reject) {
-		qrcode.toDataURL(str, function(err, url) {
+	return new Promise(function (resolve, reject) {
+		qrcode.toDataURL(str, function (err, url) {
 			if (err) {
 				logError("2q3ur8fhudshfs", err, str);
 
@@ -623,24 +623,23 @@ function outputTypeAbbreviation(outputType) {
 }
 
 function prettyScript(inScript, indentChar) {
-	var indenter=["OP_IF", "OP_ELSE"]
-	var outdenter=["OP_ENDIF", "OP_ELSE"]
+	var indenter = ["OP_IF", "OP_ELSE"]
+	var outdenter = ["OP_ENDIF", "OP_ELSE"]
 
 	s = inScript.split(" ");
-	var shiftAmt=0;
+	var shiftAmt = 0;
 	var i;
 	var indenting = '';
 
 	for (i = 0; i < s.length; i++) {
-		var item=s[i];
-		if (s[i].slice(0,2) == "OP")
-		{
+		var item = s[i];
+		if (s[i].slice(0, 2) == "OP") {
 			s[i] = "<span class='opcode'>" + s[i] + "</span>";
 		}
 		if (outdenter.includes(item)) shiftAmt -= 1;
 		if (shiftAmt < 0) shiftAmt = 0;
 		indenting = Array(shiftAmt).join(indentChar);
-		s[i] = "<div style='text-indent: " + indenting  + "em'>" + s[i] + "</div>";
+		s[i] = "<div style='text-indent: " + indenting + "em'>" + s[i] + "</div>";
 		if (indenter.includes(item)) shiftAmt += 1;
 	}
 	return s.join("\n");
