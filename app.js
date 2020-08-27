@@ -344,6 +344,7 @@ app.onStartup = function () {
 	let allExplorers = new Map([
 		["mainnet", new utils.ExplorerLink("mainnet", "Mainnet Explorer", "https://explorer.bitcoincash.org")],
 		["testnet", new utils.ExplorerLink("testnet", "Testnet Explorer", "https://texplorer.bitcoincash.org")],
+		["activationTestnet", new utils.ExplorerLink("activationTestnet", "Activation Testnet Explorer", "https://upgrade-explorer.bitcoincash.org")],
 	]);
 	const selectedExplorerKey = process.env.BTCEXP_EXPLORER_INSTANCE;
 	global.selectedExplorer = allExplorers.get(selectedExplorerKey);
@@ -357,6 +358,17 @@ app.onStartup = function () {
 		otherExplorers.push(value);
 	}
 	global.siblingExplorers = otherExplorers;
+
+	const activationTimestamp = process.env.BTCEXP_ACTIVATION_TIMESTAMP;
+	if (global.selectedExplorer.identifier == 'activationTestnet') {
+		// need a timestamp if this is an activationTestnet explorer
+		if (activationTimestamp == undefined) {
+			debugLog(`Please inform an activation timestamp when running with --explorer-instance \'activationTestnet\'`);
+			process.exit(1);
+		}
+		global.currentActivation = moment.unix(activationTimestamp);
+		global.nextActivation = moment.unix(activationTimestamp).add(1, 'day');
+	}
 
 	loadChangelog();
 
@@ -488,6 +500,10 @@ app.use(function (req, res, next) {
 
 	res.locals.allExplorers = global.allExplorers;
 	res.locals.siblingExplorers = global.siblingExplorers
+
+	// make currentActivation and nextActivation timestamp available to templates
+	res.locals.currentActivation = global.currentActivation;
+	res.locals.nextActivation = global.nextActivation;
 
 	// currency format type
 	if (!req.session.currencyFormatType) {

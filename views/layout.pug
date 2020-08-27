@@ -35,6 +35,11 @@ html(lang="en")
 								img.header-image(src="/img/logo/bch.svg", alt="logo")
 								span.navbar-brand #{explorer.displayName}
 
+				if selectedExplorer.identifier == 'activationTestnet'
+					span(class="navbar-text")
+						a(href="https://github.com/bitcoincashorg/bitcoincash.org/blob/master/workgroups/wg-testing/2020-11-15_upgrade_testnet.md") activation timestamps:
+						| &nbsp; current: #{currentActivation.format('X')} / tomorrow's: #{nextActivation.format('X')}
+
 				span(class="pull-right navbar-text") hosted by 
 					a(href="https://www.bitcoincash.org") BitcoinCash.org
 

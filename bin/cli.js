@@ -35,6 +35,7 @@ const args = require('meow')(`
       --sentry-url <sentry-url>      sentry url [default: disabled]
 
       --explorer-instance <inst>     is a 'mainnet' or 'testnet' explorer? [default: 'mainnet']
+      --activation-timestamp <time>  activation timestamp for current testnet [required for --explorer-instance 'activationTestnet']
 
       -e, --node-env <env>           nodejs environment mode [default: production]
       -h, --help                     output usage information
@@ -56,7 +57,7 @@ const args = require('meow')(`
             , bitcoindUri: {alias:'b'}, bitcoindHost: {alias:'H'}, bitcoindPort: {alias:'P'}
             , bitcoindCookie: {alias:'c'}, bitcoindUser: {alias:'u'}, bitcoindPass: {alias:'w'}, redisUrl: {alias:'r'}
             , demo: {type:'boolean'}, rpcAllowall: {type:'boolean'}, electrumxServers: {alias:'E'}
-            , explorerInstance: {type:'string', default:'mainnet'}
+            , explorerInstance: {type:'string', default:'mainnet'}, activationTimestamp: {}
             , nodeEnv: {alias:'e', default:'production'}
             , privacyMode: {type:'boolean'}, slowDeviceMode: {type:'boolean'}
             } }
